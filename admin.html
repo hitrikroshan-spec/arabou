@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Gestion des Inscriptions</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f3f4f6; display: flex; }
+        .sidebar { width: 260px; background: #0f172a; color: white; height: 100vh; padding: 20px 10px; box-sizing: border-box; position: fixed; }
+        .sidebar h2 { text-align: center; color: #38bdf8; font-size: 1.4rem; margin-bottom: 30px; }
+        .menu-item { padding: 12px; margin: 8px 0; border-radius: 8px; cursor: pointer; color: #94a3b8; transition: all 0.3s; }
+        .menu-item:hover { background: #1e293b; color: white; }
+        .menu-item.active { background: #ea580c; color: white; font-weight: bold; }
+        
+        .main-content { flex: 1; margin-left: 260px; padding: 40px; box-sizing: border-box; min-height: 100vh; }
+        .header-dash { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-add { background: #0f172a; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        .btn-add:hover { background: #1e293b; }
+        
+        /* Cartes Statistiques */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-left: 5px solid #64748b; }
+        .stat-card.waiting { border-left-color: #f59e0b; }
+        .stat-card.validated { border-left-color: #10b981; }
+        .stat-card.blocked { border-left-color: #ef4444; }
+        .stat-label { font-size: 0.85rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
+        .stat-number { font-size: 1.8rem; font-weight: bold; color: #1e293b; margin-top: 5px; }
+
+        /* Tableau */
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f8fafc; padding: 16px; color: #64748b; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 16px; border-bottom: 1px solid #e2e8f0; color: #334155; font-size: 0.95rem; }
+        tr:hover { background: #f8fafc; }
+
+        /* Badges de Statut */
+        .badge { padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
+        .badge.waiting { background: #fef3c7; color: #d97706; }
+        .badge.validated { background: #d1fae5; color: #065f46; }
+        .badge.blocked { background: #fee2e2; color: #991b1b; }
+
+        /* Sélecteur d'action rapide */
+        .select-status { padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; cursor: pointer; margin-right: 5px; }
+        
+        .btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-right: 5px; }
+        .btn-edit { background: #e0f2fe; color: #0369a1; }
+        .btn-edit:hover { background: #bae6fd; }
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .btn-delete:hover { background: #fecaca; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>العربية — PRO</h2>
+        <div class="menu-item active">👥 Gestion Utilisateurs</div>
+        <div class="menu-item" onclick="alert('Module Dictionnaire à venir')">📚 Gestion Dico</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header-dash">
+            <h1 style="color: #0f172a; margin: 0; font-size: 1.75rem;">Tableau de Bord Administrateur</h1>
+            <button class="btn-add" onclick="addNewClientManual()">＋ Ajouter un client manuel</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Inscrits</div>
+                <div class="stat-number" id="stat-total">0</div>
+            </div>
+            <div class="stat-card waiting">
+                <div class="stat-label">En Attente de Droits</div>
+                <div class="stat-number" id="stat-waiting">0</div>
+            </div>
+            <div class="stat-card validated">
+                <div class="stat-label">Accès Validés</div>
+                <div class="stat-number" id="stat-validated">0</div>
+            </div>
+            <div class="stat-card blocked">
+                <div class="stat-label">Accès Bloqués</div>
+                <div class="stat-number" id="stat-blocked">0</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Client</th>
+                        <th>Nom Complet</th>
+                        <th>Téléphone</th>
+                        <th>Mot de passe</th>
+                        <th>Date d'inscription</th>
+                        <th>Statut Droits</th>
+                        <th>Changer Statut / Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+<script>
+    // Charger et calculer les données pour l'interface administrateur
+    function loadAdminData() {
+        // Récupération de la clé globale partagée avec l'application client
+        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
+        
+        let tableBody = document.getElementById('admin-table-body');
+        tableBody.innerHTML = "";
+
+        let countWaiting = 0;
+        let countValidated = 0;
+        let countBlocked = 0;
+
+        if (clients.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b; padding: 30px;">Aucun utilisateur inscrit pour le moment.</td></tr>`;
+        }
+
+        clients.forEach((client, index) => {
+            // Uniformisation des libellés de statuts pour la compatibilité
+            let statusClass = "waiting";
+            let statusLabel = "En Attente";
+            
+            if (client.status === "Valider" || client.status === "Validated") {
+                statusClass = "validated";
+                statusLabel = "Validé";
+                countValidated++;
+            } else if (client.status === "Bloquer" || client.status === "Blocked") {
+                statusClass = "blocked";
+                statusLabel = "Bloqué";
+                countBlocked++;
+            } else {
+                countWaiting++; // "En Attente" ou "attente" par défaut
+            }
+
+            let row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="font-weight: bold; color: #0284c7;">#${client.id || (101 + index)}</td>
+                <td style="font-weight: 500;">${client.nom || client.name}</td>
+                <td>${client.phone}</td>
+                <td style="font-family: monospace; color: #64748b;">${client.password || '—'}</td>
+                <td>${client.date || '—'}</td>
+                <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+                <td>
+                    <select class="select-status" onchange="updateClientStatus(${index}, this.value)">
+                        <option value="">-- Modifier le droit --</option>
+                        <option value="En Attente" ${client.status === 'En Attente' ? 'selected' : ''}>En Attente</option>
+                        <option value="Valider" ${client.status === 'Valider' ? 'selected' : ''}>Valider l'accès</option>
+                        <option value="Bloquer" ${client.status === 'Bloquer' ? 'selected' : ''}>Bloquer l'accès</option>
+                    </select>
+                    <button class="btn-action btn-edit" onclick="editClientInfo(${index})">Modifier</button>
+                    <button class="btn-action btn-delete" onclick="deleteClient(${index})">Supprimer</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Mise à jour des cartes de statistiques en haut
+        document.getElementById('stat-total').innerText = clients.length;
+        document.getElementById('stat-waiting').innerText = countWaiting;
+        document.getElementById('stat-validated').innerText = countValidated;
+        document.getElementById('stat-blocked').innerText = countBlocked;
+    }
+
+    // Modifier le statut (Droit d'accès) d'un client
+    function updateClientStatus(index, newStatus) {
+        if (!newStatus) return;
+        
+        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
+        if (clients[index]) {
+            clients[index].status = newStatus;
+            localStorage.setItem('registered_clients', JSON.stringify(clients));
+            loadAdminData();
+        }
+    }
+
+    // Modifier manuellement le nom, téléphone ou mot de passe d'un client
+    function editClientInfo(index) {
+        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
+        if (!clients[index]) return;
+
+        let currentNom = clients[index].nom || clients[index].name;
+        let newNom = prompt("Modifier le nom complet :", currentNom);
+        if (newNom === null) return; // Annulé
+
+        let newPhone = prompt("Modifier le numéro de téléphone :", clients[index].phone);
+        if (newPhone === null) return;
+
+        let newPass = prompt("Modifier le mot de passe :", clients[index].password || "");
+        if (newPass === null) return;
+
+        clients[index].nom = newNom.trim();
+        clients[index].phone = newPhone.trim();
+        clients[index].password = newPass.trim();
+
+        localStorage.setItem('registered_clients', JSON.stringify(clients));
+        loadAdminData();
+        alert("Informations du client mises à jour !");
+    }
+
+    // Supprimer un utilisateur définitivement
+    function deleteClient(index) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer définitivement ce client ? Son accès sera révoqué.")) {
+            let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
+            clients.splice(index, 1);
+            localStorage.setItem('registered_clients', JSON.stringify(clients));
+            loadAdminData();
+        }
+    }
+
+    // Ajout manuel d'un client par l'administrateur
+    function addNewClientManual() {
+        let nom = prompt("Nom complet du client :");
+        if (!nom || nom.trim() === "") return;
+        let phone = prompt("Numéro de téléphone :");
+        if (!phone || phone.trim() === "") return;
+        let password = prompt("Définir un mot de passe de connexion :");
+        if (!password || password.trim() === "") return;
+
+        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
+        
+        // Génération d'un ID unique incrémental
+        let newId = 101;
+        if (clients.length > 0) {
+            let maxId = Math.max(...clients.map(c => parseInt(c.id) || 100));
+            newId = maxId + 1;
+        }
+
+        let newClient = {
+            id: newId,
+            nom: nom.trim(),
+            phone: phone.trim(),
+            password: password.trim(),
+            date: new Date().toISOString().split('T')[0],
+            status: "Valider" // Directement validé par défaut si créé manuellement par l'admin
+        };
+
+        clients.push(newClient);
+        localStorage.setItem('registered_clients', JSON.stringify(clients));
+        loadAdminData();
+        alert("Nouveau client ajouté et validé avec succès !");
+    }
+
+    // Recharger automatiquement les données au chargement de la page
+    window.onload = loadAdminData;
+</script>
+</body>
+</html>

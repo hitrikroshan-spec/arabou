@@ -1213,23 +1213,32 @@ function processRegister() {
 
     clients.push({ id:newId, nom:name, phone, password:pass, date:new Date().toISOString().split('T')[0], status:"En Attente" });
     localStorage.setItem('registered_clients', JSON.stringify(clients));
-    alert("تم التسجيل بنجاح! انتظر تفعيل حسابك من قبل المسؤول.");
+    alert("✅ تم التسجيل بنجاح! حسابك في انتظار التفعيل من المسؤول.\n📞 Contactez: +226 74 95 81 05\nUne fois validé, connectez-vous.");
     switchAuthTab('login');
 }
 
 function processLogin() {
     const phone = document.getElementById('auth-login-phone').value.trim();
     const pass  = document.getElementById('auth-login-pass').value;
-    if (!phone||!pass) { alert("يرجى ملء جميع الحقول"); return; }
+    if (!phone||!pass) { alert("يرجى ملء جميع الحقول\nVeuillez remplir tous les champs."); return; }
 
     let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
     let client  = clients.find(c=>c.phone===phone && c.password===pass);
-    if (!client) { alert("رقم الهاتف أو كلمة المرور خاطئة"); return; }
-    if (client.status!=="Valider") { alert("حسابك قيد الانتظار. يرجى الاتصال بالمسؤول."); return; }
+    if (!client) { alert("❌ رقم الهاتف أو كلمة المرور خاطئة\nNuméro ou mot de passe incorrect."); return; }
 
-    activeUser = { name:client.nom, email:"Tel: "+client.phone, avatarLetter:client.nom.charAt(0).toUpperCase() };
+    if (client.status === "Bloquer" || client.status === "Blocked") {
+        alert("🚫 حسابك محظور. يرجى التواصل مع المسؤول.\nVotre accès a été bloqué. Contactez l'administrateur : +226 74 95 81 05");
+        return;
+    }
+    if (client.status !== "Valider" && client.status !== "Validated") {
+        alert("⏳ حسابك قيد الانتظار. انتظر تفعيل حسابك من قبل المسؤول.\nVotre compte est en attente de validation par l'administrateur.\n📞 Contactez : +226 74 95 81 05");
+        return;
+    }
 
-    // Show welcome screen
+    // Stocker la session active
+    sessionStorage.setItem('activeClientPhone', phone);
+    activeUser = { name:client.nom||client.name, phone:client.phone, email:"Tel: "+client.phone, avatarLetter:(client.nom||client.name).charAt(0).toUpperCase() };
+
     document.getElementById('screen-auth').classList.add('hidden');
     showWelcomeScreen();
 }
@@ -1681,6 +1690,19 @@ window.onload = () => {
         localStorage.setItem('arabic_dict_initialized','true');
     }
     renderSavedNotes();
+
+    // Surveillance temps reel du statut via localStorage
+    window.addEventListener('storage', function(e) {
+        if (e.key !== 'registered_clients') return;
+        if (activeUser && activeUser.phone) {
+            let clients = JSON.parse(e.newValue) || [];
+            let me = clients.find(c => c.phone === activeUser.phone);
+            if (me && (me.status === 'Bloquer' || me.status === 'Blocked')) {
+                alert('🚫 Votre acces a ete revoque par l administrateur. Vous allez etre deconnecte.');
+                userLogout();
+            }
+        }
+    });
 };
 </script>
 </body>

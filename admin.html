@@ -11,13 +11,10 @@
         .menu-item { padding: 12px; margin: 8px 0; border-radius: 8px; cursor: pointer; color: #94a3b8; transition: all 0.3s; }
         .menu-item:hover { background: #1e293b; color: white; }
         .menu-item.active { background: #ea580c; color: white; font-weight: bold; }
-        
         .main-content { flex: 1; margin-left: 260px; padding: 40px; box-sizing: border-box; min-height: 100vh; }
         .header-dash { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-add { background: #0f172a; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
         .btn-add:hover { background: #1e293b; }
-        
-        /* Cartes Statistiques */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-left: 5px solid #64748b; }
         .stat-card.waiting { border-left-color: #f59e0b; }
@@ -25,281 +22,228 @@
         .stat-card.blocked { border-left-color: #ef4444; }
         .stat-label { font-size: 0.85rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
         .stat-number { font-size: 1.8rem; font-weight: bold; color: #1e293b; margin-top: 5px; }
-
-        /* Tableau */
         .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th { background: #f8fafc; padding: 16px; color: #64748b; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
         td { padding: 16px; border-bottom: 1px solid #e2e8f0; color: #334155; font-size: 0.95rem; }
         tr:hover { background: #f8fafc; }
-
-        /* Badges de Statut */
         .badge { padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
         .badge.waiting { background: #fef3c7; color: #d97706; }
         .badge.validated { background: #d1fae5; color: #065f46; }
         .badge.blocked { background: #fee2e2; color: #991b1b; }
-
-        /* Sélecteur d'action rapide */
         .select-status { padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; cursor: pointer; margin-right: 5px; }
-        
         .btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-right: 5px; }
         .btn-edit { background: #e0f2fe; color: #0369a1; }
         .btn-edit:hover { background: #bae6fd; }
         .btn-delete { background: #fee2e2; color: #b91c1c; }
         .btn-delete:hover { background: #fecaca; }
+        #notif-banner { display:none; margin-top:8px; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:8px 14px; font-size:0.88rem; color:#92400e; }
+        #fb-status { font-size:0.78rem; padding:4px 10px; border-radius:20px; display:inline-block; margin-left:12px; }
+        #fb-status.online { background:#d1fae5; color:#065f46; }
+        #fb-status.offline { background:#fee2e2; color:#991b1b; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>العربية — PRO</h2>
-        <div class="menu-item active">👥 Gestion Utilisateurs</div>
-        <div class="menu-item" onclick="alert('Module Dictionnaire à venir')">📚 Gestion Dico</div>
-        <hr style="border-color:#1e293b; margin: 20px 0 10px;">
-        <a href="index.html" target="_blank" style="text-decoration:none;">
-            <div class="menu-item" style="background:#1e293b; color:#38bdf8;">🔗 Ouvrir l'App Client</div>
-        </a>
+<div class="sidebar">
+    <h2>العربية — PRO</h2>
+    <div class="menu-item active">👥 Gestion Utilisateurs</div>
+    <div class="menu-item" onclick="alert('Module Dictionnaire à venir')">📚 Gestion Dico</div>
+    <hr style="border-color:#1e293b; margin: 20px 0 10px;">
+    <a href="index.html" target="_blank" style="text-decoration:none;">
+        <div class="menu-item" style="background:#1e293b; color:#38bdf8;">🔗 Ouvrir l'App Client</div>
+    </a>
+</div>
+
+<div class="main-content">
+    <div class="header-dash">
+        <div>
+            <h1 style="color:#0f172a;margin:0;font-size:1.75rem;">
+                Tableau de Bord Administrateur
+                <span id="fb-status" class="offline">● Connexion...</span>
+            </h1>
+            <div id="notif-banner">🔔 <span id="notif-text"></span></div>
+        </div>
+        <button class="btn-add" onclick="addNewClientManual()">＋ Ajouter un client manuel</button>
     </div>
 
-    <div class="main-content">
-        <div class="header-dash">
-            <div>
-            <h1 style="color: #0f172a; margin: 0; font-size: 1.75rem;">Tableau de Bord Administrateur</h1>
-            <div id="notif-banner" style="display:none; margin-top:8px; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:8px 14px; font-size:0.88rem; color:#92400e;">
-                🔔 <span id="notif-text"></span>
-            </div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total Inscrits</div>
+            <div class="stat-number" id="stat-total">—</div>
         </div>
-            <button class="btn-add" onclick="addNewClientManual()">＋ Ajouter un client manuel</button>
+        <div class="stat-card waiting">
+            <div class="stat-label">En Attente de Droits</div>
+            <div class="stat-number" id="stat-waiting">—</div>
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Total Inscrits</div>
-                <div class="stat-number" id="stat-total">0</div>
-            </div>
-            <div class="stat-card waiting">
-                <div class="stat-label">En Attente de Droits</div>
-                <div class="stat-number" id="stat-waiting">0</div>
-            </div>
-            <div class="stat-card validated">
-                <div class="stat-label">Accès Validés</div>
-                <div class="stat-number" id="stat-validated">0</div>
-            </div>
-            <div class="stat-card blocked">
-                <div class="stat-label">Accès Bloqués</div>
-                <div class="stat-number" id="stat-blocked">0</div>
-            </div>
+        <div class="stat-card validated">
+            <div class="stat-label">Accès Validés</div>
+            <div class="stat-number" id="stat-validated">—</div>
         </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Client</th>
-                        <th>Nom Complet</th>
-                        <th>Téléphone</th>
-                        <th>Mot de passe</th>
-                        <th>Date d'inscription</th>
-                        <th>Statut Droits</th>
-                        <th>Changer Statut / Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="admin-table-body">
-                    </tbody>
-            </table>
+        <div class="stat-card blocked">
+            <div class="stat-label">Accès Bloqués</div>
+            <div class="stat-number" id="stat-blocked">—</div>
         </div>
     </div>
 
-<script>
-    // Charger et calculer les données pour l'interface administrateur
-    function loadAdminData() {
-        // Récupération de la clé globale partagée avec l'application client
-        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
-        
-        let tableBody = document.getElementById('admin-table-body');
-        tableBody.innerHTML = "";
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Client</th>
+                    <th>Nom Complet</th>
+                    <th>Téléphone</th>
+                    <th>Mot de passe</th>
+                    <th>Date d'inscription</th>
+                    <th>Statut Droits</th>
+                    <th>Changer Statut / Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-table-body">
+                <tr><td colspan="7" style="text-align:center;color:#64748b;padding:30px;">Chargement depuis Firebase...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        let countWaiting = 0;
-        let countValidated = 0;
-        let countBlocked = 0;
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, remove, push, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-        if (clients.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b; padding: 30px;">Aucun utilisateur inscrit pour le moment.</td></tr>`;
-        }
+const firebaseConfig = {
+    databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const clientsRef = ref(db, 'clients');
 
-        clients.forEach((client, index) => {
-            // Uniformisation des libellés de statuts pour la compatibilité
-            let statusClass = "waiting";
-            let statusLabel = "En Attente";
-            
-            if (client.status === "Valider" || client.status === "Validated") {
-                statusClass = "validated";
-                statusLabel = "Validé";
-                countValidated++;
-            } else if (client.status === "Bloquer" || client.status === "Blocked") {
-                statusClass = "blocked";
-                statusLabel = "Bloqué";
-                countBlocked++;
-            } else {
-                countWaiting++; // "En Attente" ou "attente" par défaut
-            }
+// Indicateur de connexion
+const connRef = ref(db, '.info/connected');
+onValue(connRef, snap => {
+    const el = document.getElementById('fb-status');
+    if (snap.val()) { el.textContent = '● En ligne'; el.className = 'online'; }
+    else { el.textContent = '● Hors ligne'; el.className = 'offline'; }
+});
 
-            let row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="font-weight: bold; color: #0284c7;">#${client.id || (101 + index)}</td>
-                <td style="font-weight: 500;">${client.nom || client.name}</td>
-                <td>${client.phone}</td>
-                <td style="font-family: monospace; color: #64748b;">${client.password || '—'}</td>
+// Écoute temps réel de tous les clients
+let prevCount = 0;
+onValue(clientsRef, snapshot => {
+    const data = snapshot.val() || {};
+    const clients = Object.entries(data).map(([key, val]) => ({ _key: key, ...val }));
+    renderTable(clients);
+
+    // Notification nouveau inscrit
+    if (clients.length > prevCount && prevCount > 0) {
+        const diff = clients.length - prevCount;
+        showNotif(`🔔 ${diff} nouvelle(s) inscription(s) ! Pensez à valider les accès.`);
+    }
+    prevCount = clients.length;
+});
+
+function renderTable(clients) {
+    const tbody = document.getElementById('admin-table-body');
+    let waiting = 0, validated = 0, blocked = 0;
+
+    if (clients.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;padding:30px;">Aucun utilisateur inscrit pour le moment.</td></tr>`;
+    } else {
+        tbody.innerHTML = clients.map(client => {
+            let sc = 'waiting', sl = 'En Attente';
+            if (client.status === 'Valider') { sc = 'validated'; sl = 'Validé'; validated++; }
+            else if (client.status === 'Bloquer') { sc = 'blocked'; sl = 'Bloqué'; blocked++; }
+            else waiting++;
+
+            return `<tr>
+                <td style="font-weight:bold;color:#0284c7;">#${client.id || '—'}</td>
+                <td style="font-weight:500;">${client.nom || '—'}</td>
+                <td>${client.phone || '—'}</td>
+                <td style="font-family:monospace;color:#64748b;">${client.password || '—'}</td>
                 <td>${client.date || '—'}</td>
-                <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+                <td><span class="badge ${sc}">${sl}</span></td>
                 <td>
-                    <select class="select-status" onchange="updateClientStatus(${index}, this.value)">
+                    <select class="select-status" onchange="window._updateStatus('${client._key}', '${client.nom}', this.value)">
                         <option value="">-- Modifier le droit --</option>
-                        <option value="En Attente" ${client.status === 'En Attente' ? 'selected' : ''}>En Attente</option>
-                        <option value="Valider" ${client.status === 'Valider' ? 'selected' : ''}>Valider l'accès</option>
-                        <option value="Bloquer" ${client.status === 'Bloquer' ? 'selected' : ''}>Bloquer l'accès</option>
+                        <option value="En Attente" ${client.status==='En Attente'?'selected':''}>En Attente</option>
+                        <option value="Valider" ${client.status==='Valider'?'selected':''}>Valider l'accès</option>
+                        <option value="Bloquer" ${client.status==='Bloquer'?'selected':''}>Bloquer l'accès</option>
                     </select>
-                    <button class="btn-action btn-edit" onclick="editClientInfo(${index})">Modifier</button>
-                    <button class="btn-action btn-delete" onclick="deleteClient(${index})">Supprimer</button>
+                    <button class="btn-action btn-edit" onclick="window._editClient('${client._key}', '${client.nom}', '${client.phone}', '${client.password||''}')">Modifier</button>
+                    <button class="btn-action btn-delete" onclick="window._deleteClient('${client._key}', '${client.nom}')">Supprimer</button>
                 </td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        // Mise à jour des cartes de statistiques en haut
-        document.getElementById('stat-total').innerText = clients.length;
-        document.getElementById('stat-waiting').innerText = countWaiting;
-        document.getElementById('stat-validated').innerText = countValidated;
-        document.getElementById('stat-blocked').innerText = countBlocked;
+            </tr>`;
+        }).join('');
     }
 
-    // Modifier le statut (Droit d'accès) d'un client
-    function updateClientStatus(index, newStatus) {
-        if (!newStatus) return;
-        
-        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
-        if (clients[index]) {
-            let clientName = clients[index].nom || clients[index].name;
-            clients[index].status = newStatus;
-            localStorage.setItem('registered_clients', JSON.stringify(clients));
+    document.getElementById('stat-total').innerText = clients.length;
+    document.getElementById('stat-waiting').innerText = waiting;
+    document.getElementById('stat-validated').innerText = validated;
+    document.getElementById('stat-blocked').innerText = blocked;
+}
 
-            // Message de confirmation selon le statut
-            let msg = {
-                'Valider': '✅ Accès validé pour ' + clientName + '. Le client peut maintenant se connecter.',
-                'Bloquer': '🚫 Accès bloqué pour ' + clientName + '.',
-                'En Attente': '⏳ Statut remis en attente pour ' + clientName + '.'
-            }[newStatus] || 'Statut mis à jour.';
-            showNotifBanner(msg);
-            loadAdminData();
-        }
-    }
+// ── Actions exposées au HTML inline ──────────────────────────
+window._updateStatus = async (key, nom, newStatus) => {
+    if (!newStatus) return;
+    await update(ref(db, 'clients/' + key), { status: newStatus });
+    const msgs = {
+        'Valider': `✅ Accès validé pour ${nom}. Il peut maintenant se connecter.`,
+        'Bloquer': `🚫 Accès bloqué pour ${nom}.`,
+        'En Attente': `⏳ Statut remis en attente pour ${nom}.`
+    };
+    showNotif(msgs[newStatus] || 'Statut mis à jour.');
+};
 
-    // Modifier manuellement le nom, téléphone ou mot de passe d'un client
-    function editClientInfo(index) {
-        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
-        if (!clients[index]) return;
-
-        let currentNom = clients[index].nom || clients[index].name;
-        let newNom = prompt("Modifier le nom complet :", currentNom);
-        if (newNom === null) return; // Annulé
-
-        let newPhone = prompt("Modifier le numéro de téléphone :", clients[index].phone);
-        if (newPhone === null) return;
-
-        let newPass = prompt("Modifier le mot de passe :", clients[index].password || "");
-        if (newPass === null) return;
-
-        clients[index].nom = newNom.trim();
-        clients[index].phone = newPhone.trim();
-        clients[index].password = newPass.trim();
-
-        localStorage.setItem('registered_clients', JSON.stringify(clients));
-        loadAdminData();
-        alert("Informations du client mises à jour !");
-    }
-
-    // Supprimer un utilisateur définitivement
-    function deleteClient(index) {
-        if (confirm("Êtes-vous sûr de vouloir supprimer définitivement ce client ? Son accès sera révoqué.")) {
-            let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
-            clients.splice(index, 1);
-            localStorage.setItem('registered_clients', JSON.stringify(clients));
-            loadAdminData();
-        }
-    }
-
-    // Ajout manuel d'un client par l'administrateur
-    function addNewClientManual() {
-        let nom = prompt("Nom complet du client :");
-        if (!nom || nom.trim() === "") return;
-        let phone = prompt("Numéro de téléphone :");
-        if (!phone || phone.trim() === "") return;
-        let password = prompt("Définir un mot de passe de connexion :");
-        if (!password || password.trim() === "") return;
-
-        let clients = JSON.parse(localStorage.getItem('registered_clients')) || [];
-        
-        // Génération d'un ID unique incrémental
-        let newId = 101;
-        if (clients.length > 0) {
-            let maxId = Math.max(...clients.map(c => parseInt(c.id) || 100));
-            newId = maxId + 1;
-        }
-
-        let newClient = {
-            id: newId,
-            nom: nom.trim(),
-            phone: phone.trim(),
-            password: password.trim(),
-            date: new Date().toISOString().split('T')[0],
-            status: "Valider" // Directement validé par défaut si créé manuellement par l'admin
-        };
-
-        clients.push(newClient);
-        localStorage.setItem('registered_clients', JSON.stringify(clients));
-        loadAdminData();
-        alert("Nouveau client ajouté et validé avec succès !");
-    }
-
-    // Recharger automatiquement les données au chargement de la page
-    
-    // ============================================================
-    //  SURVEILLANCE TEMPS REEL - Nouveaux inscrits
-    // ============================================================
-    let _lastCount = (JSON.parse(localStorage.getItem('registered_clients')) || []).length;
-    let _lastWaiting = (JSON.parse(localStorage.getItem('registered_clients')) || []).filter(c => c.status === 'En Attente' || c.status === 'attente').length;
-
-    window.addEventListener('storage', function(e) {
-        if (e.key !== 'registered_clients') return;
-        let clients = JSON.parse(e.newValue) || [];
-        let newCount = clients.length;
-        let newWaiting = clients.filter(c => c.status === 'En Attente' || c.status === 'attente').length;
-
-        if (newCount > _lastCount) {
-            let diff = newCount - _lastCount;
-            showNotifBanner(diff + ' nouvelle(s) inscription(s) ! Pensez à valider les accès.');
-            _lastCount = newCount;
-        }
-        if (newWaiting > _lastWaiting) {
-            showNotifBanner('⚠️ ' + newWaiting + ' compte(s) en attente de validation.');
-        }
-        _lastWaiting = newWaiting;
-        loadAdminData();
+window._editClient = async (key, nom, phone, password) => {
+    const newNom = prompt("Modifier le nom complet :", nom);
+    if (newNom === null) return;
+    const newPhone = prompt("Modifier le téléphone :", phone);
+    if (newPhone === null) return;
+    const newPass = prompt("Modifier le mot de passe :", password);
+    if (newPass === null) return;
+    await update(ref(db, 'clients/' + key), {
+        nom: newNom.trim(), phone: newPhone.trim(), password: newPass.trim()
     });
+    showNotif(`✏️ Informations de ${newNom} mises à jour.`);
+};
 
-    function showNotifBanner(msg) {
-        let banner = document.getElementById('notif-banner');
-        let text = document.getElementById('notif-text');
-        if (!banner || !text) return;
-        text.innerText = msg;
-        banner.style.display = 'block';
-        setTimeout(() => { banner.style.display = 'none'; }, 8000);
-    }
+window._deleteClient = async (key, nom) => {
+    if (!confirm(`Supprimer définitivement ${nom} ? Son accès sera révoqué.`)) return;
+    await remove(ref(db, 'clients/' + key));
+    showNotif(`🗑️ Client ${nom} supprimé.`);
+};
 
-    // Polling de secours toutes les 10s (si meme onglet)
-    setInterval(() => { loadAdminData(); }, 10000);
+window.addNewClientManual = async () => {
+    const nom = prompt("Nom complet du client :");
+    if (!nom || !nom.trim()) return;
+    const phone = prompt("Numéro de téléphone :");
+    if (!phone || !phone.trim()) return;
+    const password = prompt("Définir un mot de passe :");
+    if (!password || !password.trim()) return;
 
-window.onload = loadAdminData;
+    const snap = await get(clientsRef);
+    const data = snap.val() || {};
+    const ids = Object.values(data).map(c => parseInt(c.id) || 100);
+    const newId = ids.length ? Math.max(...ids) + 1 : 101;
+
+    const newRef = push(clientsRef);
+    await set(newRef, {
+        id: newId,
+        nom: nom.trim(),
+        phone: phone.trim(),
+        password: password.trim(),
+        date: new Date().toISOString().split('T')[0],
+        status: "Valider"
+    });
+    showNotif(`✅ Client ${nom} ajouté et validé avec succès !`);
+};
+
+// ── Notification bannière ─────────────────────────────────────
+function showNotif(msg) {
+    const banner = document.getElementById('notif-banner');
+    document.getElementById('notif-text').innerText = msg;
+    banner.style.display = 'block';
+    setTimeout(() => banner.style.display = 'none', 8000);
+}
 </script>
 </body>
 </html>

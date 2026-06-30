@@ -34,9 +34,7 @@
         .select-status { padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; cursor: pointer; margin-right: 5px; }
         .btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-right: 5px; }
         .btn-edit { background: #e0f2fe; color: #0369a1; }
-        .btn-edit:hover { background: #bae6fd; }
         .btn-delete { background: #fee2e2; color: #b91c1c; }
-        .btn-delete:hover { background: #fecaca; }
         #notif-banner { display:none; margin-top:8px; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:8px 14px; font-size:0.88rem; color:#92400e; }
         #fb-status { font-size:0.78rem; padding:4px 10px; border-radius:20px; display:inline-block; margin-left:12px; }
         #fb-status.online { background:#d1fae5; color:#065f46; }
@@ -48,7 +46,6 @@
 <div class="sidebar">
     <h2>العربية — PRO</h2>
     <div class="menu-item active">👥 Gestion Utilisateurs</div>
-    <div class="menu-item" onclick="alert('Module Dictionnaire à venir')">📚 Gestion Dico</div>
     <hr style="border-color:#1e293b; margin: 20px 0 10px;">
     <a href="index.html" target="_blank" style="text-decoration:none;">
         <div class="menu-item" style="background:#1e293b; color:#38bdf8;">🔗 Ouvrir l'App Client</div>
@@ -106,25 +103,15 @@
     </div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue, set, update, remove, push, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyD_PLACEHOLDER_REMPLACEZ_PAR_VOTRE_CLE",
-    authDomain: "arabou-fad0c.firebaseapp.com",
-    databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/",
-    projectId: "arabou-fad0c",
-    storageBucket: "arabou-fad0c.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:000000000000000000"
-};
+const firebaseConfig = { databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const clientsRef = ref(db, 'clients');
 
-// Indicateur de connexion
 const connRef = ref(db, '.info/connected');
 onValue(connRef, snap => {
     const el = document.getElementById('fb-status');
@@ -132,17 +119,15 @@ onValue(connRef, snap => {
     else { el.textContent = '● Hors ligne'; el.className = 'offline'; }
 });
 
-// Écoute temps réel de tous les clients
 let prevCount = 0;
 onValue(clientsRef, snapshot => {
     const data = snapshot.val() || {};
     const clients = Object.entries(data).map(([key, val]) => ({ _key: key, ...val }));
     renderTable(clients);
 
-    // Notification nouveau inscrit
     if (clients.length > prevCount && prevCount > 0) {
         const diff = clients.length - prevCount;
-        showNotif(`🔔 ${diff} nouvelle(s) inscription(s) ! Pensez à valider les accès.`);
+        showNotif(`${diff} nouvelle(s) inscription(s) détectée(s) !`);
     }
     prevCount = clients.length;
 });
@@ -187,12 +172,11 @@ function renderTable(clients) {
     document.getElementById('stat-blocked').innerText = blocked;
 }
 
-// ── Actions exposées au HTML inline ──────────────────────────
 window._updateStatus = async (key, nom, newStatus) => {
     if (!newStatus) return;
     await update(ref(db, 'clients/' + key), { status: newStatus });
     const msgs = {
-        'Valider': `✅ Accès validé pour ${nom}. Il peut maintenant se connecter.`,
+        'Valider': `✅ Accès validé pour ${nom}.`,
         'Bloquer': `🚫 Accès bloqué pour ${nom}.`,
         'En Attente': `⏳ Statut remis en attente pour ${nom}.`
     };
@@ -209,11 +193,11 @@ window._editClient = async (key, nom, phone, password) => {
     await update(ref(db, 'clients/' + key), {
         nom: newNom.trim(), phone: newPhone.trim(), password: newPass.trim()
     });
-    showNotif(`✏️ Informations de ${newNom} mises à jour.`);
+    showNotif(`✏️ Informations mises à jour.`);
 };
 
 window._deleteClient = async (key, nom) => {
-    if (!confirm(`Supprimer définitivement ${nom} ? Son accès sera révoqué.`)) return;
+    if (!confirm(`Supprimer définitivement ${nom} ?`)) return;
     await remove(ref(db, 'clients/' + key));
     showNotif(`🗑️ Client ${nom} supprimé.`);
 };
@@ -240,15 +224,14 @@ window.addNewClientManual = async () => {
         date: new Date().toISOString().split('T')[0],
         status: "Valider"
     });
-    showNotif(`✅ Client ${nom} ajouté et validé avec succès !`);
+    showNotif(`✅ Client ${nom} ajouté et validé.`);
 };
 
-// ── Notification bannière ─────────────────────────────────────
 function showNotif(msg) {
     const banner = document.getElementById('notif-banner');
     document.getElementById('notif-text').innerText = msg;
     banner.style.display = 'block';
-    setTimeout(() => banner.style.display = 'none', 8000);
+    setTimeout(() => banner.style.display = 'none', 5000);
 }
 </script>
 </body>

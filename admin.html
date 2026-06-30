@@ -3,235 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration - Gestion des Inscriptions</title>
+    <title>Administration — العربية PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f3f4f6; display: flex; }
-        .sidebar { width: 260px; background: #0f172a; color: white; height: 100vh; padding: 20px 10px; box-sizing: border-box; position: fixed; }
-        .sidebar h2 { text-align: center; color: #38bdf8; font-size: 1.4rem; margin-bottom: 30px; }
-        .menu-item { padding: 12px; margin: 8px 0; border-radius: 8px; cursor: pointer; color: #94a3b8; transition: all 0.3s; }
-        .menu-item:hover { background: #1e293b; color: white; }
-        .menu-item.active { background: #ea580c; color: white; font-weight: bold; }
-        .main-content { flex: 1; margin-left: 260px; padding: 40px; box-sizing: border-box; min-height: 100vh; }
-        .header-dash { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-add { background: #0f172a; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
-        .btn-add:hover { background: #1e293b; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-left: 5px solid #64748b; }
-        .stat-card.waiting { border-left-color: #f59e0b; }
-        .stat-card.validated { border-left-color: #10b981; }
-        .stat-card.blocked { border-left-color: #ef4444; }
-        .stat-label { font-size: 0.85rem; color: #64748b; font-weight: bold; text-transform: uppercase; }
-        .stat-number { font-size: 1.8rem; font-weight: bold; color: #1e293b; margin-top: 5px; }
-        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #f8fafc; padding: 16px; color: #64748b; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 16px; border-bottom: 1px solid #e2e8f0; color: #334155; font-size: 0.95rem; }
-        tr:hover { background: #f8fafc; }
-        .badge { padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
-        .badge.waiting { background: #fef3c7; color: #d97706; }
-        .badge.validated { background: #d1fae5; color: #065f46; }
-        .badge.blocked { background: #fee2e2; color: #991b1b; }
-        .select-status { padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.85rem; cursor: pointer; margin-right: 5px; }
-        .btn-action { padding: 6px 12px; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: bold; cursor: pointer; margin-right: 5px; }
-        .btn-edit { background: #e0f2fe; color: #0369a1; }
-        .btn-delete { background: #fee2e2; color: #b91c1c; }
-        #notif-banner { display:none; margin-top:8px; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:8px 14px; font-size:0.88rem; color:#92400e; }
-        #fb-status { font-size:0.78rem; padding:4px 10px; border-radius:20px; display:inline-block; margin-left:12px; }
-        #fb-status.online { background:#d1fae5; color:#065f46; }
-        #fb-status.offline { background:#fee2e2; color:#991b1b; }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:'Inter',sans-serif;background:#f1f5f9;display:flex;}
+
+        /* ── SIDEBAR ── */
+        .sidebar{width:240px;background:#0f172a;color:#fff;height:100vh;padding:24px 12px;box-sizing:border-box;position:fixed;display:flex;flex-direction:column;gap:4px;}
+        .sidebar-logo{text-align:center;padding:12px 0 24px;border-bottom:1px solid #1e293b;margin-bottom:12px;}
+        .sidebar-logo h2{color:#38bdf8;font-size:1.2rem;}
+        .sidebar-logo p{color:#64748b;font-size:0.72rem;margin-top:4px;}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:8px;cursor:pointer;color:#94a3b8;font-size:0.9rem;font-weight:500;transition:all .2s;border:none;background:none;width:100%;text-align:left;}
+        .nav-item:hover{background:#1e293b;color:#fff;}
+        .nav-item.active{background:#2563eb;color:#fff;font-weight:700;}
+        .nav-item .icon{font-size:1.1rem;width:22px;text-align:center;}
+        .sidebar-sep{border:none;border-top:1px solid #1e293b;margin:8px 0;}
+        .nav-link{display:block;text-decoration:none;color:inherit;}
+
+        /* ── MAIN ── */
+        .main{flex:1;margin-left:240px;padding:32px;min-height:100vh;}
+        .page{display:none;} .page.active{display:block;}
+
+        /* ── HEADER ── */
+        .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+        .page-title{font-size:1.5rem;font-weight:700;color:#0f172a;}
+        .page-subtitle{font-size:0.85rem;color:#64748b;margin-top:3px;}
+
+        /* ── STATS ── */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+        .stat-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #64748b;}
+        .stat-card.blue{border-left-color:#3b82f6;}
+        .stat-card.amber{border-left-color:#f59e0b;}
+        .stat-card.green{border-left-color:#10b981;}
+        .stat-card.red{border-left-color:#ef4444;}
+        .stat-card.violet{border-left-color:#8b5cf6;}
+        .stat-label{font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;}
+        .stat-val{font-size:2rem;font-weight:800;color:#0f172a;margin-top:6px;}
+
+        /* ── BANNER NOTIF ── */
+        #notif-banner{display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:9px 14px;font-size:0.85rem;color:#92400e;margin-bottom:16px;}
+        #fb-badge{display:inline-block;font-size:0.72rem;padding:2px 8px;border-radius:20px;margin-left:10px;vertical-align:middle;}
+        #fb-badge.on{background:#d1fae5;color:#065f46;}
+        #fb-badge.off{background:#fee2e2;color:#991b1b;}
+
+        /* ── TABLE ── */
+        .card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;}
+        table{width:100%;border-collapse:collapse;text-align:left;}
+        th{background:#f8fafc;padding:13px 16px;color:#64748b;font-size:0.75rem;text-transform:uppercase;border-bottom:2px solid #e2e8f0;font-weight:700;white-space:nowrap;}
+        td{padding:14px 16px;border-bottom:1px solid #f1f5f9;color:#334155;font-size:0.88rem;vertical-align:middle;}
+        tr:hover td{background:#f8fafc;}
+
+        /* ── BADGES ── */
+        .badge{padding:4px 10px;border-radius:50px;font-size:0.75rem;font-weight:700;display:inline-block;white-space:nowrap;}
+        .badge-wait{background:#fef3c7;color:#d97706;}
+        .badge-ok{background:#d1fae5;color:#065f46;}
+        .badge-block{background:#fee2e2;color:#991b1b;}
+        .badge-active{background:#dbeafe;color:#1d4ed8;}
+        .badge-expired{background:#fee2e2;color:#991b1b;}
+        .badge-none{background:#f1f5f9;color:#64748b;}
+
+        /* ── BOUTONS ── */
+        .btn{padding:6px 12px;border-radius:6px;border:none;font-size:0.82rem;font-weight:600;cursor:pointer;transition:opacity .15s;}
+        .btn:hover{opacity:.85;}
+        .btn-primary{background:#2563eb;color:#fff;}
+        .btn-green{background:#d1fae5;color:#065f46;}
+        .btn-red{background:#fee2e2;color:#b91c1c;}
+        .btn-amber{background:#fef3c7;color:#92400e;}
+        .btn-violet{background:#ede9fe;color:#5b21b6;}
+        .btn-blue{background:#dbeafe;color:#1e40af;}
+        .btn-add{background:#0f172a;color:#fff;padding:10px 18px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:0.9rem;}
+        .btn-add:hover{background:#1e293b;}
+
+        select.sel-status{padding:5px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:0.82rem;cursor:pointer;}
+
+        /* ── MODAL ── */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+        .modal-overlay.open{display:flex;}
+        .modal{background:#fff;border-radius:16px;padding:28px;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+        .modal h3{font-size:1.15rem;font-weight:700;color:#0f172a;margin-bottom:20px;border-bottom:2px solid #f1f5f9;padding-bottom:12px;}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+        .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+        .form-group label{font-size:0.78rem;font-weight:700;color:#64748b;}
+        .form-group input, .form-group select{padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;font-family:inherit;}
+        .form-group input:focus, .form-group select:focus{outline:none;border-color:#2563eb;}
+        .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;}
+
+        /* ── DICO PAGE ── */
+        .dico-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+        .word-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;}
+        .word-ar{font-size:1.3rem;color:#2563eb;font-weight:700;}
+        .word-fr{font-size:0.88rem;color:#64748b;margin-top:3px;}
+        .lock-icon{font-size:1rem;color:#94a3b8;}
+
+        /* ── PAIEMENT HISTORIQUE ── */
+        .pay-badge-ok{background:#d1fae5;color:#065f46;padding:3px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;}
+        .pay-badge-no{background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:20px;font-size:0.75rem;font-weight:700;}
+
+        /* ── PROGRESS ABONNEMENT ── */
+        .abo-progress{width:100%;background:#e2e8f0;border-radius:20px;height:6px;margin-top:4px;}
+        .abo-progress-fill{height:6px;border-radius:20px;background:#10b981;transition:width .3s;}
     </style>
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════ -->
 <div class="sidebar">
-    <h2>العربية — PRO</h2>
-    <div class="menu-item active">👥 Gestion Utilisateurs</div>
-    <hr style="border-color:#1e293b; margin: 20px 0 10px;">
-    <a href="index.html" target="_blank" style="text-decoration:none;">
-        <div class="menu-item" style="background:#1e293b; color:#38bdf8;">🔗 Ouvrir l'App Client</div>
+    <div class="sidebar-logo">
+        <h2>العربية — PRO</h2>
+        <p>Panneau Administrateur</p>
+    </div>
+
+    <button class="nav-item active" onclick="showPage('clients')" id="nav-clients">
+        <span class="icon">👥</span> Clients & Accès
+    </button>
+    <button class="nav-item" onclick="showPage('abonnements')" id="nav-abonnements">
+        <span class="icon">💳</span> Abonnements
+    </button>
+    <button class="nav-item" onclick="showPage('dico')" id="nav-dico">
+        <span class="icon">📚</span> Dictionnaire
+    </button>
+
+    <hr class="sidebar-sep">
+    <a href="index.html" target="_blank" class="nav-link">
+        <button class="nav-item">
+            <span class="icon">📱</span> Voir l'App Client
+        </button>
     </a>
 </div>
 
-<div class="main-content">
-    <div class="header-dash">
-        <div>
-            <h1 style="color:#0f172a;margin:0;font-size:1.75rem;">
-                Tableau de Bord Administrateur
-                <span id="fb-status" class="offline">● Connexion...</span>
-            </h1>
-            <div id="notif-banner">🔔 <span id="notif-text"></span></div>
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════ -->
+<div class="main">
+
+    <!-- BANNER NOTIFICATION -->
+    <div id="notif-banner">🔔 <span id="notif-text"></span></div>
+
+    <!-- ───────────────────────────────────────
+         PAGE 1 : CLIENTS & ACCÈS
+    ─────────────────────────────────────────── -->
+    <div class="page active" id="page-clients">
+        <div class="page-header">
+            <div>
+                <div class="page-title">
+                    Gestion des Clients
+                    <span id="fb-badge" class="off">● Connexion…</span>
+                </div>
+                <div class="page-subtitle">Validez les accès et gérez les comptes utilisateurs</div>
+            </div>
+            <button class="btn-add" onclick="openModalAddClient()">＋ Ajouter un client</button>
         </div>
-        <button class="btn-add" onclick="addNewClientManual()">＋ Ajouter un client manuel</button>
+
+        <div class="stats-grid">
+            <div class="stat-card blue"><div class="stat-label">Total Inscrits</div><div class="stat-val" id="s-total">—</div></div>
+            <div class="stat-card amber"><div class="stat-label">En Attente</div><div class="stat-val" id="s-wait">—</div></div>
+            <div class="stat-card green"><div class="stat-label">Accès Validés</div><div class="stat-val" id="s-ok">—</div></div>
+            <div class="stat-card red"><div class="stat-label">Bloqués</div><div class="stat-val" id="s-block">—</div></div>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead><tr>
+                    <th>ID</th><th>Nom</th><th>Téléphone</th><th>Mot de passe</th>
+                    <th>Inscription</th><th>Statut Accès</th><th>Abonnement</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="clients-tbody">
+                    <tr><td colspan="8" style="text-align:center;padding:30px;color:#64748b;">Chargement…</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-label">Total Inscrits</div>
-            <div class="stat-number" id="stat-total">—</div>
+    <!-- ───────────────────────────────────────
+         PAGE 2 : ABONNEMENTS & PAIEMENTS
+    ─────────────────────────────────────────── -->
+    <div class="page" id="page-abonnements">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Abonnements & Paiements</div>
+                <div class="page-subtitle">Gérez les abonnements, dates et statuts de paiement</div>
+            </div>
         </div>
-        <div class="stat-card waiting">
-            <div class="stat-label">En Attente de Droits</div>
-            <div class="stat-number" id="stat-waiting">—</div>
+
+        <div class="stats-grid">
+            <div class="stat-card green"><div class="stat-label">Abonnements Actifs</div><div class="stat-val" id="sa-actif">—</div></div>
+            <div class="stat-card red"><div class="stat-label">Expirés</div><div class="stat-val" id="sa-expire">—</div></div>
+            <div class="stat-card violet"><div class="stat-label">Sans Abonnement</div><div class="stat-val" id="sa-none">—</div></div>
+            <div class="stat-card amber"><div class="stat-label">Revenus du Mois</div><div class="stat-val" id="sa-revenu">—</div></div>
         </div>
-        <div class="stat-card validated">
-            <div class="stat-label">Accès Validés</div>
-            <div class="stat-number" id="stat-validated">—</div>
-        </div>
-        <div class="stat-card blocked">
-            <div class="stat-label">Accès Bloqués</div>
-            <div class="stat-number" id="stat-blocked">—</div>
+
+        <div class="card">
+            <table>
+                <thead><tr>
+                    <th>Client</th><th>Téléphone</th><th>Type d'Abonnement</th>
+                    <th>Début</th><th>Fin / Expiration</th><th>Montant</th><th>Paiement</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="abo-tbody">
+                    <tr><td colspan="8" style="text-align:center;padding:30px;color:#64748b;">Chargement…</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID Client</th>
-                    <th>Nom Complet</th>
-                    <th>Téléphone</th>
-                    <th>Mot de passe</th>
-                    <th>Date d'inscription</th>
-                    <th>Statut Droits</th>
-                    <th>Changer Statut / Actions</th>
-                </tr>
-            </thead>
-            <tbody id="admin-table-body">
-                <tr><td colspan="7" style="text-align:center;color:#64748b;padding:30px;">Chargement depuis Firebase...</td></tr>
-            </tbody>
-        </table>
+    <!-- ───────────────────────────────────────
+         PAGE 3 : DICTIONNAIRE
+    ─────────────────────────────────────────── -->
+    <div class="page" id="page-dico">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Gestion du Dictionnaire</div>
+                <div class="page-subtitle">Les mots ajoutés ici sont visibles par tous les clients connectés</div>
+            </div>
+            <button class="btn-add" onclick="openModalAddWord()">＋ Ajouter un mot</button>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="stat-card blue"><div class="stat-label">Total Mots</div><div class="stat-val" id="sd-total">—</div></div>
+            <div class="stat-card green"><div class="stat-label">Mots Ajoutés</div><div class="stat-val" id="sd-custom">—</div></div>
+            <div class="stat-card amber"><div class="stat-label">Mots par Défaut</div><div class="stat-val" id="sd-default">—</div></div>
+        </div>
+
+        <div class="card" style="padding:20px;">
+            <div class="dico-grid" id="dico-grid">
+                <p style="color:#64748b;text-align:center;">Chargement…</p>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /main -->
+
+<!-- ═══════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
+
+<!-- Modal : Ajouter/Modifier Client -->
+<div class="modal-overlay" id="modal-client">
+    <div class="modal">
+        <h3 id="modal-client-title">Ajouter un Client</h3>
+        <input type="hidden" id="modal-client-key">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nom complet</label>
+                <input type="text" id="mc-nom" placeholder="Abdoulaye Compaoré">
+            </div>
+            <div class="form-group">
+                <label>Téléphone</label>
+                <input type="tel" id="mc-phone" placeholder="70000000">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="text" id="mc-pass" placeholder="••••••">
+            </div>
+            <div class="form-group">
+                <label>Statut d'accès</label>
+                <select id="mc-status">
+                    <option value="En Attente">⏳ En Attente</option>
+                    <option value="Valider">✅ Valider l'accès</option>
+                    <option value="Bloquer">🚫 Bloquer</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-red" onclick="closeModal('modal-client')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveClient()">Enregistrer</button>
+        </div>
     </div>
 </div>
 
+<!-- Modal : Gérer Abonnement -->
+<div class="modal-overlay" id="modal-abo">
+    <div class="modal">
+        <h3>💳 Gérer l'Abonnement — <span id="ma-nom"></span></h3>
+        <input type="hidden" id="ma-key">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Type d'abonnement</label>
+                <select id="ma-type">
+                    <option value="Aucun">Aucun</option>
+                    <option value="Mensuel">Mensuel (1 mois)</option>
+                    <option value="Trimestriel">Trimestriel (3 mois)</option>
+                    <option value="Semestriel">Semestriel (6 mois)</option>
+                    <option value="Annuel">Annuel (12 mois)</option>
+                    <option value="Personnalisé">Personnalisé</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Date de début</label>
+                <input type="date" id="ma-debut">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Date de fin (auto ou manuelle)</label>
+                <input type="date" id="ma-fin">
+            </div>
+            <div class="form-group">
+                <label>Montant payé (FCFA)</label>
+                <input type="number" id="ma-montant" placeholder="2000">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mode de paiement</label>
+                <select id="ma-mode">
+                    <option value="Orange Money">Orange Money</option>
+                    <option value="Moov Money">Moov Money</option>
+                    <option value="Espèces">Espèces</option>
+                    <option value="Wave">Wave</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Statut du paiement</label>
+                <select id="ma-paye">
+                    <option value="true">✅ Payé</option>
+                    <option value="false">❌ Non payé</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Notes / Référence</label>
+            <input type="text" id="ma-notes" placeholder="Ex: Réf OM #123456">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-red" onclick="closeModal('modal-abo')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveAbonnement()">Enregistrer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal : Ajouter Mot Dictionnaire -->
+<div class="modal-overlay" id="modal-word">
+    <div class="modal">
+        <h3>📚 Ajouter un mot au Dictionnaire</h3>
+        <div class="form-group">
+            <label>Mot en Arabe (avec voyelles si possible)</label>
+            <input type="text" id="mw-nko" placeholder="مَرْحَبًا" style="font-size:1.3rem;direction:rtl;">
+        </div>
+        <div class="form-group">
+            <label>Traduction / Signification</label>
+            <input type="text" id="mw-sens" placeholder="Bonjour" style="direction:ltr;">
+        </div>
+        <div class="form-group">
+            <label>Image (optionnel)</label>
+            <input type="file" id="mw-img" accept="image/*">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-red" onclick="closeModal('modal-word')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveNewWord()">Ajouter au Dictionnaire</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FIREBASE SCRIPT
+════════════════════════════════════════════ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, update, remove, push, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, update, remove, push, get }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-const firebaseConfig = { databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const clientsRef = ref(db, 'clients');
+const app = initializeApp({ databaseURL:"https://arabou-fad0c-default-rtdb.firebaseio.com/" });
+const db  = getDatabase(app);
 
-const connRef = ref(db, '.info/connected');
-onValue(connRef, snap => {
-    const el = document.getElementById('fb-status');
-    if (snap.val()) { el.textContent = '● En ligne'; el.className = 'online'; }
-    else { el.textContent = '● Hors ligne'; el.className = 'offline'; }
+/* ── Connexion Firebase ── */
+onValue(ref(db,'.info/connected'), snap=>{
+    const el=document.getElementById('fb-badge');
+    el.textContent = snap.val() ? '● En ligne' : '● Hors ligne';
+    el.className   = snap.val() ? 'on' : 'off';
 });
 
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+window.showPage = id => {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
+    document.getElementById('nav-'+id).classList.add('active');
+    if(id==='dico') renderDico();
+    if(id==='abonnements') renderAbonnements();
+};
+
+/* ══════════════════════════════════════
+   CLIENTS — écoute temps réel
+══════════════════════════════════════ */
+let clientsCache = [];
 let prevCount = 0;
-onValue(clientsRef, snapshot => {
-    const data = snapshot.val() || {};
-    const clients = Object.entries(data).map(([key, val]) => ({ _key: key, ...val }));
-    renderTable(clients);
 
-    if (clients.length > prevCount && prevCount > 0) {
-        const diff = clients.length - prevCount;
-        showNotif(`${diff} nouvelle(s) inscription(s) détectée(s) !`);
+onValue(ref(db,'clients'), snap=>{
+    const data = snap.val()||{};
+    clientsCache = Object.entries(data).map(([k,v])=>({_key:k,...v}));
+    renderClientsTable();
+    renderAbonnements();
+    if(clientsCache.length > prevCount && prevCount > 0){
+        showNotif(`🔔 ${clientsCache.length-prevCount} nouvelle(s) inscription(s) !`);
     }
-    prevCount = clients.length;
+    prevCount = clientsCache.length;
 });
 
-function renderTable(clients) {
-    const tbody = document.getElementById('admin-table-body');
-    let waiting = 0, validated = 0, blocked = 0;
-
-    if (clients.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#64748b;padding:30px;">Aucun utilisateur inscrit pour le moment.</td></tr>`;
+function renderClientsTable(){
+    const tbody = document.getElementById('clients-tbody');
+    let w=0,ok=0,bl=0;
+    if(!clientsCache.length){
+        tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:30px;color:#64748b;">Aucun client inscrit.</td></tr>`;
     } else {
-        tbody.innerHTML = clients.map(client => {
-            let sc = 'waiting', sl = 'En Attente';
-            if (client.status === 'Valider') { sc = 'validated'; sl = 'Validé'; validated++; }
-            else if (client.status === 'Bloquer') { sc = 'blocked'; sl = 'Bloqué'; blocked++; }
-            else waiting++;
-
+        tbody.innerHTML = clientsCache.map(c=>{
+            let bc='badge-wait',bl_='En Attente';
+            if(c.status==='Valider'){bc='badge-ok';bl_='Validé';ok++;}
+            else if(c.status==='Bloquer'){bc='badge-block';bl_='Bloqué';bl++;}
+            else w++;
+            const abo = c.abonnement||{};
+            const aboLabel = abo.type&&abo.type!=='Aucun'
+                ? `<span class="badge ${isAboExpired(abo)?'badge-expired':'badge-active'}">${abo.type}${isAboExpired(abo)?' ⚠️':''}</span>`
+                : `<span class="badge badge-none">Aucun</span>`;
             return `<tr>
-                <td style="font-weight:bold;color:#0284c7;">#${client.id || '—'}</td>
-                <td style="font-weight:500;">${client.nom || '—'}</td>
-                <td>${client.phone || '—'}</td>
-                <td style="font-family:monospace;color:#64748b;">${client.password || '—'}</td>
-                <td>${client.date || '—'}</td>
-                <td><span class="badge ${sc}">${sl}</span></td>
+                <td style="font-weight:700;color:#2563eb;">#${c.id||'—'}</td>
+                <td style="font-weight:600;">${c.nom||'—'}</td>
+                <td>${c.phone||'—'}</td>
+                <td style="font-family:monospace;color:#64748b;">${c.password||'—'}</td>
+                <td style="color:#64748b;">${c.date||'—'}</td>
                 <td>
-                    <select class="select-status" onchange="window._updateStatus('${client._key}', '${client.nom}', this.value)">
-                        <option value="">-- Modifier le droit --</option>
-                        <option value="En Attente" ${client.status==='En Attente'?'selected':''}>En Attente</option>
-                        <option value="Valider" ${client.status==='Valider'?'selected':''}>Valider l'accès</option>
-                        <option value="Bloquer" ${client.status==='Bloquer'?'selected':''}>Bloquer l'accès</option>
+                    <select class="sel-status" onchange="_setStatus('${c._key}','${c.nom}',this.value)">
+                        <option value="En Attente" ${c.status==='En Attente'?'selected':''}>⏳ En Attente</option>
+                        <option value="Valider" ${c.status==='Valider'?'selected':''}>✅ Valider</option>
+                        <option value="Bloquer" ${c.status==='Bloquer'?'selected':''}>🚫 Bloquer</option>
                     </select>
-                    <button class="btn-action btn-edit" onclick="window._editClient('${client._key}', '${client.nom}', '${client.phone}', '${client.password||''}')">Modifier</button>
-                    <button class="btn-action btn-delete" onclick="window._deleteClient('${client._key}', '${client.nom}')">Supprimer</button>
+                </td>
+                <td>${aboLabel}</td>
+                <td style="white-space:nowrap;">
+                    <button class="btn btn-blue" onclick="_editClient('${c._key}')">✏️</button>
+                    <button class="btn btn-violet" onclick="_openAbo('${c._key}')">💳 Abo</button>
+                    <button class="btn btn-red" onclick="_deleteClient('${c._key}','${c.nom}')">🗑️</button>
                 </td>
             </tr>`;
         }).join('');
     }
-
-    document.getElementById('stat-total').innerText = clients.length;
-    document.getElementById('stat-waiting').innerText = waiting;
-    document.getElementById('stat-validated').innerText = validated;
-    document.getElementById('stat-blocked').innerText = blocked;
+    document.getElementById('s-total').innerText = clientsCache.length;
+    document.getElementById('s-wait').innerText  = w;
+    document.getElementById('s-ok').innerText    = ok;
+    document.getElementById('s-block').innerText = bl;
 }
 
-window._updateStatus = async (key, nom, newStatus) => {
-    if (!newStatus) return;
-    await update(ref(db, 'clients/' + key), { status: newStatus });
-    const msgs = {
-        'Valider': `✅ Accès validé pour ${nom}.`,
-        'Bloquer': `🚫 Accès bloqué pour ${nom}.`,
-        'En Attente': `⏳ Statut remis en attente pour ${nom}.`
+function isAboExpired(abo){
+    if(!abo.fin) return false;
+    return new Date(abo.fin) < new Date();
+}
+
+/* ── Actions clients ── */
+window._setStatus = async(key,nom,val)=>{
+    await update(ref(db,'clients/'+key),{status:val});
+    const m={'Valider':'✅ Accès validé pour '+nom,'Bloquer':'🚫 Accès bloqué pour '+nom,'En Attente':'⏳ Remis en attente pour '+nom};
+    showNotif(m[val]||'Mis à jour');
+};
+window._deleteClient = async(key,nom)=>{
+    if(!confirm(`Supprimer définitivement ${nom} ?`)) return;
+    await remove(ref(db,'clients/'+key));
+    showNotif('🗑️ '+nom+' supprimé.');
+};
+window._editClient = key=>{
+    const c = clientsCache.find(x=>x._key===key); if(!c) return;
+    document.getElementById('modal-client-title').innerText = 'Modifier le Client';
+    document.getElementById('modal-client-key').value = key;
+    document.getElementById('mc-nom').value   = c.nom||'';
+    document.getElementById('mc-phone').value = c.phone||'';
+    document.getElementById('mc-pass').value  = c.password||'';
+    document.getElementById('mc-status').value= c.status||'En Attente';
+    openModal('modal-client');
+};
+window.openModalAddClient = ()=>{
+    document.getElementById('modal-client-title').innerText='Ajouter un Client';
+    document.getElementById('modal-client-key').value='';
+    ['mc-nom','mc-phone','mc-pass'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('mc-status').value='Valider';
+    openModal('modal-client');
+};
+window.saveClient = async()=>{
+    const key  = document.getElementById('modal-client-key').value;
+    const nom  = document.getElementById('mc-nom').value.trim();
+    const phone= document.getElementById('mc-phone').value.trim();
+    const pass = document.getElementById('mc-pass').value.trim();
+    const st   = document.getElementById('mc-status').value;
+    if(!nom||!phone||!pass){ alert("Remplissez tous les champs."); return; }
+    if(key){
+        await update(ref(db,'clients/'+key),{nom,phone,password:pass,status:st});
+        showNotif('✏️ Client '+nom+' mis à jour.');
+    } else {
+        const ids = clientsCache.map(c=>parseInt(c.id)||100);
+        const newId = ids.length ? Math.max(...ids)+1 : 101;
+        await set(push(ref(db,'clients')),{
+            id:newId,nom,phone,password:pass,
+            date:new Date().toISOString().split('T')[0],status:st,
+            abonnement:{type:'Aucun',debut:'',fin:'',montant:0,paye:false,mode:'',notes:''}
+        });
+        showNotif('✅ Client '+nom+' ajouté.');
+    }
+    closeModal('modal-client');
+};
+
+/* ══════════════════════════════════════
+   ABONNEMENTS & PAIEMENTS
+══════════════════════════════════════ */
+window._openAbo = key=>{
+    const c = clientsCache.find(x=>x._key===key); if(!c) return;
+    const abo = c.abonnement||{};
+    document.getElementById('ma-key').value    = key;
+    document.getElementById('ma-nom').innerText= c.nom;
+    document.getElementById('ma-type').value   = abo.type||'Aucun';
+    document.getElementById('ma-debut').value  = abo.debut||'';
+    document.getElementById('ma-fin').value    = abo.fin||'';
+    document.getElementById('ma-montant').value= abo.montant||'';
+    document.getElementById('ma-mode').value   = abo.mode||'Orange Money';
+    document.getElementById('ma-paye').value   = abo.paye===true?'true':'false';
+    document.getElementById('ma-notes').value  = abo.notes||'';
+    openModal('modal-abo');
+};
+
+// Auto-calcul date de fin selon type
+document.getElementById('ma-type').addEventListener('change', ()=>{
+    const type = document.getElementById('ma-type').value;
+    const debut = document.getElementById('ma-debut').value;
+    if(!debut||type==='Personnalisé'||type==='Aucun') return;
+    const d = new Date(debut);
+    const months = {Mensuel:1,Trimestriel:3,Semestriel:6,Annuel:12};
+    if(months[type]){ d.setMonth(d.getMonth()+months[type]); document.getElementById('ma-fin').value=d.toISOString().split('T')[0]; }
+});
+document.getElementById('ma-debut').addEventListener('change', ()=>{
+    document.getElementById('ma-type').dispatchEvent(new Event('change'));
+});
+
+window.saveAbonnement = async()=>{
+    const key     = document.getElementById('ma-key').value;
+    const type    = document.getElementById('ma-type').value;
+    const debut   = document.getElementById('ma-debut').value;
+    const fin     = document.getElementById('ma-fin').value;
+    const montant = parseFloat(document.getElementById('ma-montant').value)||0;
+    const mode    = document.getElementById('ma-mode').value;
+    const paye    = document.getElementById('ma-paye').value==='true';
+    const notes   = document.getElementById('ma-notes').value.trim();
+    await update(ref(db,'clients/'+key+'/abonnement'),{type,debut,fin,montant,paye,mode,notes});
+    // Ajouter à l'historique des paiements
+    if(paye && montant>0){
+        await push(ref(db,'paiements/'+key),{
+            date:new Date().toISOString().split('T')[0],
+            montant,mode,type,notes,
+            client: clientsCache.find(x=>x._key===key)?.nom||''
+        });
+    }
+    showNotif('💳 Abonnement mis à jour.');
+    closeModal('modal-abo');
+};
+
+function renderAbonnements(){
+    const tbody = document.getElementById('abo-tbody');
+    let actif=0, expire=0, none=0, revenuMois=0;
+    const mois = new Date().getMonth(), annee = new Date().getFullYear();
+    if(!clientsCache.length){
+        tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:30px;color:#64748b;">Aucun client.</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = clientsCache.map(c=>{
+        const abo = c.abonnement||{};
+        let statusBadge = '<span class="badge badge-none">Sans abonnement</span>';
+        if(abo.type && abo.type!=='Aucun'){
+            if(isAboExpired(abo)){ statusBadge=`<span class="badge badge-expired">⚠️ Expiré</span>`; expire++; }
+            else { statusBadge=`<span class="badge badge-active">✅ Actif</span>`; actif++; }
+        } else none++;
+        if(abo.paye && abo.montant){
+            const d=new Date(abo.debut||0);
+            if(d.getMonth()===mois && d.getFullYear()===annee) revenuMois+=parseFloat(abo.montant)||0;
+        }
+        const payeBadge = abo.paye
+            ? '<span class="pay-badge-ok">✅ Payé</span>'
+            : '<span class="pay-badge-no">❌ Non payé</span>';
+        // Calcul progression
+        let progHtml='';
+        if(abo.debut && abo.fin){
+            const start=new Date(abo.debut),end=new Date(abo.fin),now=new Date();
+            const pct=Math.max(0,Math.min(100,((now-start)/(end-start))*100));
+            const remaining=Math.ceil((end-now)/(1000*60*60*24));
+            progHtml=`<div style="font-size:0.72rem;color:#64748b;margin-top:2px;">
+                ${remaining>0?remaining+' j. restants':'Expiré'}
+                <div class="abo-progress"><div class="abo-progress-fill" style="width:${pct}%;background:${pct>80?'#ef4444':'#10b981'};"></div></div>
+            </div>`;
+        }
+        return `<tr>
+            <td style="font-weight:600;">${c.nom||'—'}</td>
+            <td>${c.phone||'—'}</td>
+            <td>${abo.type||'—'}${progHtml}</td>
+            <td>${abo.debut||'—'}</td>
+            <td>${abo.fin||'—'}</td>
+            <td style="font-weight:700;color:#2563eb;">${abo.montant?abo.montant.toLocaleString()+' FCFA':'—'}</td>
+            <td>${payeBadge}<br><small style="color:#64748b;">${abo.mode||''}</small></td>
+            <td>
+                <button class="btn btn-violet" onclick="_openAbo('${c._key}')">💳 Gérer</button>
+            </td>
+        </tr>`;
+    }).join('');
+    document.getElementById('sa-actif').innerText  = actif;
+    document.getElementById('sa-expire').innerText = expire;
+    document.getElementById('sa-none').innerText   = none;
+    document.getElementById('sa-revenu').innerText = revenuMois.toLocaleString()+' F';
+}
+
+/* ══════════════════════════════════════
+   DICTIONNAIRE
+══════════════════════════════════════ */
+let dicoCache = [];
+onValue(ref(db,'dictionnaire'), snap=>{
+    const data=snap.val()||{};
+    dicoCache=Object.entries(data).map(([k,v])=>({_key:k,...v}));
+    renderDico();
+});
+
+function renderDico(){
+    const grid=document.getElementById('dico-grid'); if(!grid) return;
+    const custom=dicoCache.filter(d=>!d.isDefault).length;
+    const def=dicoCache.filter(d=>d.isDefault).length;
+    document.getElementById('sd-total').innerText  = dicoCache.length;
+    document.getElementById('sd-custom').innerText = custom;
+    document.getElementById('sd-default').innerText= def;
+    if(!dicoCache.length){ grid.innerHTML='<p style="color:#64748b;text-align:center;">Aucun mot.</p>'; return; }
+    grid.innerHTML=dicoCache.map(it=>`
+        <div class="word-card">
+            <div>
+                <div class="word-ar">${it.nko}</div>
+                <div class="word-fr">${it.sens}</div>
+                ${it.img?`<img src="${it.img}" style="height:40px;border-radius:6px;margin-top:6px;">` :''}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+                ${it.isDefault
+                    ? '<span class="lock-icon" title="Mot par défaut protégé">🔒</span>'
+                    : `<button class="btn btn-red" onclick="_deleteWord('${it._key}')">Supprimer</button>`}
+            </div>
+        </div>`).join('');
+}
+
+window.openModalAddWord = ()=>{ ['mw-nko','mw-sens'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mw-img').value=''; openModal('modal-word'); };
+window.saveNewWord = async()=>{
+    const nko=document.getElementById('mw-nko').value.trim();
+    const sens=document.getElementById('mw-sens').value.trim();
+    const imgFile=document.getElementById('mw-img').files[0];
+    if(!nko||!sens){ alert("Remplissez le mot et la traduction."); return; }
+    const save=async(b64="")=>{
+        await push(ref(db,'dictionnaire'),{nko,sens,img:b64,isDefault:false});
+        showNotif('📚 Mot "'+nko+'" ajouté au dictionnaire.');
+        closeModal('modal-word');
     };
-    showNotif(msgs[newStatus] || 'Statut mis à jour.');
+    if(imgFile){
+        const r=new FileReader(); r.onload=e=>{ const io=new Image(); io.src=e.target.result; io.onload=()=>{ const cv=document.createElement('canvas'),ctx=cv.getContext('2d'); cv.width=300; cv.height=io.height*(300/io.width); ctx.drawImage(io,0,0,cv.width,cv.height); save(cv.toDataURL('image/jpeg',0.7)); }; }; r.readAsDataURL(imgFile);
+    } else save();
+};
+window._deleteWord = async key=>{
+    if(!confirm("Supprimer ce mot du dictionnaire ?")) return;
+    await remove(ref(db,'dictionnaire/'+key));
+    showNotif('🗑️ Mot supprimé.');
 };
 
-window._editClient = async (key, nom, phone, password) => {
-    const newNom = prompt("Modifier le nom complet :", nom);
-    if (newNom === null) return;
-    const newPhone = prompt("Modifier le téléphone :", phone);
-    if (newPhone === null) return;
-    const newPass = prompt("Modifier le mot de passe :", password);
-    if (newPass === null) return;
-    await update(ref(db, 'clients/' + key), {
-        nom: newNom.trim(), phone: newPhone.trim(), password: newPass.trim()
-    });
-    showNotif(`✏️ Informations mises à jour.`);
-};
+/* ══════════════════════════════════════
+   UTILITAIRES
+══════════════════════════════════════ */
+window.openModal  = id=>document.getElementById(id).classList.add('open');
+window.closeModal = id=>document.getElementById(id).classList.remove('open');
+// Fermer en cliquant en dehors
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+    m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); });
+});
 
-window._deleteClient = async (key, nom) => {
-    if (!confirm(`Supprimer définitivement ${nom} ?`)) return;
-    await remove(ref(db, 'clients/' + key));
-    showNotif(`🗑️ Client ${nom} supprimé.`);
-};
-
-window.addNewClientManual = async () => {
-    const nom = prompt("Nom complet du client :");
-    if (!nom || !nom.trim()) return;
-    const phone = prompt("Numéro de téléphone :");
-    if (!phone || !phone.trim()) return;
-    const password = prompt("Définir un mot de passe :");
-    if (!password || !password.trim()) return;
-
-    const snap = await get(clientsRef);
-    const data = snap.val() || {};
-    const ids = Object.values(data).map(c => parseInt(c.id) || 100);
-    const newId = ids.length ? Math.max(...ids) + 1 : 101;
-
-    const newRef = push(clientsRef);
-    await set(newRef, {
-        id: newId,
-        nom: nom.trim(),
-        phone: phone.trim(),
-        password: password.trim(),
-        date: new Date().toISOString().split('T')[0],
-        status: "Valider"
-    });
-    showNotif(`✅ Client ${nom} ajouté et validé.`);
-};
-
-function showNotif(msg) {
-    const banner = document.getElementById('notif-banner');
-    document.getElementById('notif-text').innerText = msg;
-    banner.style.display = 'block';
-    setTimeout(() => banner.style.display = 'none', 5000);
+function showNotif(msg){
+    const b=document.getElementById('notif-banner');
+    document.getElementById('notif-text').innerText=msg;
+    b.style.display='block';
+    clearTimeout(b._t);
+    b._t=setTimeout(()=>b.style.display='none',7000);
 }
 </script>
 </body>

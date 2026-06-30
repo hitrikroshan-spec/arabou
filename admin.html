@@ -112,7 +112,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase, ref, onValue, set, update, remove, push, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
-    databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/"
+    apiKey: "AIzaSyD_PLACEHOLDER_REMPLACEZ_PAR_VOTRE_CLE",
+    authDomain: "arabou-fad0c.firebaseapp.com",
+    databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/",
+    projectId: "arabou-fad0c",
+    storageBucket: "arabou-fad0c.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "1:000000000000:web:000000000000000000"
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);

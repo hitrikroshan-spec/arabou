@@ -72,7 +72,6 @@ body {
     overflow: hidden;
 }
 
-/* decorative circles */
 .auth-bg-top::before {
     content: '';
     position: absolute;
@@ -166,7 +165,6 @@ body {
 }
 
 .auth-form { display: flex; flex-direction: column; gap: 14px; }
-
 .field-group { display: flex; flex-direction: column; gap: 6px; }
 
 .field-label {
@@ -183,17 +181,9 @@ body {
     align-items: center;
 }
 
-.field-icon {
-    position: absolute;
-    right: 14px;
-    font-size: 1.1rem;
-    color: var(--muted);
-    pointer-events: none;
-}
-
 .field-input {
     width: 100%;
-    padding: 14px 40px 14px 16px;
+    padding: 14px 16px;
     border: 1.5px solid var(--border);
     border-radius: 13px;
     font-size: 1rem;
@@ -226,7 +216,6 @@ body {
     margin-top: 6px;
     box-shadow: 0 5px 18px rgba(37,99,235,0.35);
     transition: opacity 0.2s, transform 0.1s;
-    letter-spacing: 0.3px;
 }
 
 .btn-primary:active { opacity: 0.88; transform: scale(0.98); }
@@ -282,45 +271,6 @@ body {
     flex-shrink: 0;
 }
 
-.btn-logout:active { background: rgba(255,255,255,0.35); }
-.btn-logout title { display: none; }
-
-/* USER CARD IN HEADER */
-.user-pill {
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 20px;
-    padding: 5px 10px 5px 6px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    direction: ltr;
-    cursor: pointer;
-}
-
-.pill-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-.pill-name {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: white;
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 /* ============ CONTENT AREA ============ */
 .content {
     flex: 1;
@@ -363,312 +313,52 @@ body {
     box-shadow: 0 3px 10px rgba(37,99,235,0.25);
 }
 
-.btn-quiz-toggle {
-    background: #fff7ed;
-    border-color: #fed7aa;
-    color: #c2410c;
-}
+.btn-quiz-toggle { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+.btn-quiz-toggle.active { background: linear-gradient(135deg, #f59e0b, #d97706); border-color: transparent; color: white; }
 
-.btn-quiz-toggle.active {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    border-color: transparent;
-    color: white;
-}
-
-/* ============ ALPHABET GRID — 4 cols like image ============ */
-.arabic-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-.mini-card {
-    background: white;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    text-align: center;
-    padding: 12px 6px 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    transition: transform 0.1s;
-}
-
-.mini-card:active { transform: scale(0.95); }
-
-.arabic-letter {
-    font-family: 'Amiri', serif;
-    font-size: 2.6rem;
-    font-weight: 700;
-    display: block;
-    line-height: 1.1;
-}
-
-.latin-pron {
-    font-size: 0.72rem;
-    color: var(--muted);
-    font-weight: 600;
-    display: block;
-    margin-top: 4px;
-    direction: ltr;
-    text-transform: capitalize;
-}
+/* ============ ALPHABET GRID ============ */
+.arabic-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.mini-card { background: white; border-radius: 14px; border: 1px solid var(--border); text-align: center; padding: 12px 6px 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.arabic-letter { font-family: 'Amiri', serif; font-size: 2.6rem; font-weight: 700; display: block; line-height: 1.1; }
+.latin-pron { font-size: 0.72rem; color: var(--muted); font-weight: 600; display: block; margin-top: 4px; direction: ltr; text-transform: capitalize; }
 
 /* ============ POSITIONS ============ */
 .positions-container { display: flex; flex-direction: column; gap: 12px; }
-
-.position-card {
-    background: white;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    padding: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-}
-
-.position-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 6px;
-    margin-bottom: 8px;
-}
-
-.position-title-ar {
-    font-family: 'Amiri', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-
+.position-card { background: white; border-radius: 14px; border: 1px solid var(--border); padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
+.position-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
+.position-title-ar { font-family: 'Amiri', serif; font-size: 1.8rem; font-weight: 700; }
 .position-title-fr { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+.position-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; }
+.pos-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 6px 2px; }
+.pos-label { font-size: 0.65rem; color: #94a3b8; display: block; margin-bottom: 2px; }
+.pos-glyph { font-family: 'Amiri', serif; font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.syntax-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; margin-bottom: 14px; color: #1e3a8a; font-size: 0.83rem; line-height: 1.5; }
 
-.position-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-    text-align: center;
-}
-
-.pos-box {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 2px;
-}
-
-.pos-label {
-    font-size: 0.65rem;
-    color: #94a3b8;
-    display: block;
-    margin-bottom: 2px;
-}
-
-.pos-glyph {
-    font-family: 'Amiri', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.2;
-}
-
-.syntax-alert {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 14px;
-    color: #1e3a8a;
-    font-size: 0.83rem;
-    line-height: 1.5;
-}
-
-/* ============ QUIZ ============ */
-.quiz-card {
-    background: white;
-    border-radius: 18px;
-    padding: 20px;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    text-align: center;
-}
-
-.quiz-question {
-    font-family: 'Amiri', serif;
-    font-size: 5rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin: 10px 0;
-    line-height: 1;
-}
-
-.quiz-options {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.btn-option {
-    background: #f8fafc;
-    border: 2px solid var(--border);
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--text);
-    direction: ltr;
-    transition: all 0.15s;
-}
-
-.btn-option:active { transform: scale(0.97); }
-
-.quiz-score-bar {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 700;
-    color: var(--muted);
-    margin-bottom: 12px;
-    font-size: 0.9rem;
-}
+/* ============ QUIZ & GAMES ============ */
+.quiz-card { background: white; border-radius: 18px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.04); text-align: center; }
+.quiz-question { font-family: 'Amiri', serif; font-size: 5rem; font-weight: 700; color: var(--primary); margin: 10px 0; line-height: 1; }
+.quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px; }
+.btn-option { background: #f8fafc; border: 2px solid var(--border); padding: 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; color: var(--text); direction: ltr; }
+.quiz-score-bar { display: flex; justify-content: space-between; font-weight: 700; color: var(--muted); margin-bottom: 12px; font-size: 0.9rem; }
 
 /* ============ EXPRESSIONS ============ */
-.expression-card {
-    background: white;
-    border-radius: 18px;
-    padding: 28px 20px;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    text-align: center;
-    margin-top: 10px;
-}
-
-.expression-ar {
-    font-family: 'Amiri', serif;
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 14px;
-}
-
-.expression-fr {
-    font-size: 1.5rem;
-    color: #475569;
-    font-weight: 500;
-    direction: ltr;
-}
-
-.nav-controls {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.btn-nav {
-    flex: 1;
-    background: white;
-    border: 2px solid var(--border);
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    color: var(--text);
-    font-family: 'Amiri', serif;
-    transition: background 0.15s;
-}
-
-.btn-nav:active { background: #f1f5f9; }
+.expression-card { background: white; border-radius: 18px; padding: 28px 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.04); text-align: center; margin-top: 10px; }
+.expression-ar { font-family: 'Amiri', serif; font-size: 3rem; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
+.expression-fr { font-size: 1.5rem; color: #475569; font-weight: 500; direction: ltr; }
+.nav-controls { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+.btn-nav { flex: 1; background: white; border: 2px solid var(--border); padding: 12px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; color: var(--text); font-family: 'Amiri', serif; }
 
 /* ============ EDITOR ============ */
-.word-editor-container {
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    display: flex;
-    flex-direction: column;
-}
-
-.word-toolbar {
-    background: white;
-    border-bottom: 1px solid #cbd5e1;
-    padding: 8px;
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-    direction: ltr;
-    align-items: center;
-}
-
-.btn-word-tool {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    color: #334155;
-    min-width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.word-color-picker-wrapper {
-    display: flex;
-    align-items: center;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    background: #f8fafc;
-    height: 32px;
-    padding: 0 4px;
-    cursor: pointer;
-    gap: 4px;
-}
-
-.word-color-picker-wrapper input[type="color"] {
-    border: none;
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    background: none;
-    padding: 0;
-}
-
-.editor-rainbow-box {
-    width: 100%;
-    height: 180px;
-    border: none;
-    padding: 14px;
-    font-size: 1.7rem;
-    background: white;
-    color: #0f172a;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    direction: rtl;
-    font-family: 'Amiri', serif;
-    line-height: 1.5;
-}
-
+.word-editor-container { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+.word-toolbar { background: white; border-bottom: 1px solid #cbd5e1; padding: 8px; display: flex; gap: 5px; flex-wrap: wrap; direction: ltr; align-items: center; }
+.btn-word-tool { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: #334155; min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.word-color-picker-wrapper { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; height: 32px; padding: 0 4px; gap: 4px; }
+.word-color-picker-wrapper input[type="color"] { border: none; width: 22px; height: 22px; cursor: pointer; background: none; padding: 0; }
+.editor-rainbow-box { width: 100%; height: 180px; border: none; padding: 14px; font-size: 1.7rem; background: white; color: #0f172a; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; direction: rtl; font-family: 'Amiri', serif; line-height: 1.5; }
 .editor-rainbow-box:focus { outline: none; }
 
-/* ============ NOTES ============ */
-.note-paper {
-    background: white;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    border-right: 4px solid var(--primary);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+/* ============ NOTES & PAPERS ============ */
+.note-paper { background: white; border-radius: 14px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); border-right: 4px solid var(--primary); display: flex; flex-direction: column; gap: 8px; }
 .note-date { font-size: 0.72rem; color: var(--muted); font-weight: 700; direction: ltr; text-align: left; }
 .note-text { font-family: 'Amiri', serif; font-size: 1.3rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .note-actions { display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 8px; }
@@ -676,221 +366,48 @@ body {
 .btn-load { background: #e0f2fe; color: #0369a1; }
 .btn-trash { background: #fee2e2; color: #b91c1c; }
 
-/* ============ FORM CARDS ============ */
-.form-card {
-    background: white;
-    padding: 18px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    margin-bottom: 16px;
-}
+/* ============ FORM CARDS & DICO ============ */
+.form-card { background: white; padding: 18px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); margin-bottom: 16px; }
+.form-card h3 { margin: 0 0 14px; color: var(--text); font-size: 1.2rem; font-family: 'Amiri', serif; text-align: center; }
+.textbox { width: 100%; padding: 13px 14px; margin-bottom: 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 1rem; background: #f8fafc; }
+.btn-action { background: var(--glam); color: white; border: none; padding: 13px; width: 100%; border-radius: 12px; font-weight: 700; cursor: pointer; font-family: 'Amiri', serif; }
+.manage-title { font-size: 1rem; font-weight: 700; color: var(--text); margin: 16px 0 10px; font-family: 'Amiri', serif; text-align: center; }
 
-.form-card h3 {
-    margin: 0 0 14px;
-    color: var(--text);
-    font-size: 1.2rem;
-    font-family: 'Amiri', serif;
-    text-align: center;
-}
-
-label {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--muted);
-    display: block;
-    margin-bottom: 5px;
-    font-family: 'Amiri', serif;
-}
-
-.textbox {
-    width: 100%;
-    padding: 13px 14px;
-    margin-bottom: 13px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-size: 1rem;
-    background: #f8fafc;
-    font-family: inherit;
-}
-
-.textbox:focus { outline: none; border-color: var(--primary); }
-
-.btn-action {
-    background: var(--glam);
-    color: white;
-    border: none;
-    padding: 13px;
-    width: 100%;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 1rem;
-    font-family: 'Amiri', serif;
-    box-shadow: 0 3px 10px rgba(37,99,235,0.25);
-}
-
-.manage-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text);
-    margin: 16px 0 10px;
-    font-family: 'Amiri', serif;
-    text-align: center;
-}
-
-/* ============ DICO ============ */
-.word-item {
-    background: white;
-    padding: 13px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    margin-bottom: 9px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+.word-item { background: white; padding: 13px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 9px; display: flex; flex-direction: column; gap: 8px; }
 .word-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .word-col { flex: 1; text-align: center; }
 .word-arabic { font-family: 'Amiri', serif; font-size: 2rem; color: var(--primary); font-weight: 700; }
 .word-sens { font-size: 1.4rem; color: var(--text); font-weight: 700; }
 .word-img-container { width: 100%; display: flex; justify-content: center; margin-top: 4px; }
 .word-thumb { max-width: 100%; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
-.btn-delete { background: #fee2e2; border: none; color: #ef4444; padding: 7px 11px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Amiri', serif; }
-.lock-badge { background: #f1f5f9; color: #94a3b8; padding: 7px 11px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; font-family: 'Amiri', serif; }
-.accent-info-text {
-    background: white; padding: 11px; border-radius: 10px; text-align: center; margin-bottom: 13px;
-    font-weight: 700; color: #475569; border: 1px dashed #cbd5e1; font-family: 'Amiri', serif;
-}
+.btn-delete { background: #fee2e2; border: none; color: #ef4444; padding: 7px 11px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.lock-badge { background: #f1f5f9; color: #94a3b8; padding: 7px 11px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; }
+.accent-info-text { background: white; padding: 11px; border-radius: 10px; text-align: center; margin-bottom: 13px; font-weight: 700; color: #475569; border: 1px dashed #cbd5e1; font-family: 'Amiri', serif; }
 
-/* ============ BOTTOM TASKBAR — HIDDEN IN CONNECTED MODE ============ */
-.taskbar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 68px;
-    background: white;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    z-index: 99;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
-}
-
-/* TASKBAR IS HIDDEN BY DEFAULT, shown only when logged in */
-.taskbar { display: none; }
+/* ============ TASKBAR ============ */
+.taskbar { position: absolute; bottom: 0; left: 0; right: 0; height: 68px; background: white; border-top: 1px solid var(--border); display: none; align-items: center; justify-content: space-around; z-index: 99; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
 .taskbar.visible { display: flex; }
-
-.task-item {
-    flex: 1;
-    height: 100%;
-    background: none;
-    border: none;
-    color: #94a3b8;
-    font-size: 0.7rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Amiri', serif;
-    white-space: nowrap;
-    padding: 0 2px;
-    gap: 3px;
-    transition: color 0.15s;
-}
-
+.task-item { flex: 1; height: 100%; background: none; border: none; color: #94a3b8; font-size: 0.7rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Amiri', serif; gap: 3px; }
 .task-item .tab-icon { font-size: 1.3rem; }
 .task-item.active { color: var(--primary); }
-
-/* content padding when taskbar visible */
 .content.with-taskbar { padding-bottom: 80px; }
 
-/* Bienvenue screen (shown after login, before first tab) */
-#screen-welcome {
-    position: absolute;
-    inset: 0;
-    z-index: 500;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    padding: 30px;
-}
-
-.welcome-avatar-big {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    background: var(--glam);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.6rem;
-    font-weight: 700;
-    box-shadow: 0 6px 24px rgba(37,99,235,0.35);
-}
-
-.welcome-name {
-    font-family: 'Amiri', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--text);
-    text-align: center;
-}
-
-.welcome-sub {
-    font-size: 0.95rem;
-    color: var(--muted);
-    text-align: center;
-    direction: ltr;
-}
-
-.welcome-start-btn {
-    background: var(--glam);
-    color: white;
-    border: none;
-    padding: 16px 40px;
-    border-radius: 16px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    font-family: 'Amiri', serif;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.3);
-    margin-top: 10px;
-}
-
-.footer-cr {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 0;
-    /* hidden when taskbar visible, but keep space */
-}
+#screen-welcome { position: absolute; inset: 0; z-index: 500; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 30px; }
+.welcome-avatar-big { width: 88px; height: 88px; border-radius: 50%; background: var(--glam); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; font-weight: 700; box-shadow: 0 6px 24px rgba(37,99,235,0.35); }
+.welcome-name { font-family: 'Amiri', serif; font-size: 1.8rem; font-weight: 700; color: var(--text); text-align: center; }
+.welcome-sub { font-size: 0.95rem; color: var(--muted); text-align: center; direction: ltr; }
+.welcome-start-btn { background: var(--glam); color: white; border: none; padding: 16px 40px; border-radius: 16px; font-weight: 700; font-size: 1.1rem; cursor: pointer; font-family: 'Amiri', serif; box-shadow: 0 4px 16px rgba(37,99,235,0.3); }
 </style>
 </head>
 <body>
 <div class="phone">
 
-    <!-- ===== AUTH SCREEN ===== -->
     <div id="screen-auth">
         <div class="auth-bg-top">
             <div class="auth-logo">العربية — برو</div>
             <div class="auth-tagline">Apprenez l'arabe facilement</div>
         </div>
-
-        <div class="auth-avatar-wrap">
-            <div class="auth-avatar-big">🕌</div>
-        </div>
-
+        <div class="auth-avatar-wrap"><div class="auth-avatar-big">🕌</div></div>
         <div class="auth-body">
             <div class="auth-tabs">
                 <button class="auth-tab active" id="btn-tab-login" onclick="switchAuthTab('login')">تسجيل الدخول</button>
@@ -900,15 +417,11 @@ label {
             <div id="box-login" class="auth-form">
                 <div class="field-group">
                     <div class="field-label">📱 رقم الهاتف (N° de téléphone)</div>
-                    <div class="field-input-wrap">
-                        <input type="tel" id="auth-login-phone" class="field-input" placeholder="Ex: 70000000">
-                    </div>
+                    <div class="field-input-wrap"><input type="tel" id="auth-login-phone" class="field-input" placeholder="Ex: 70000000"></div>
                 </div>
                 <div class="field-group">
                     <div class="field-label">🔒 كلمة المرور (Mot de passe)</div>
-                    <div class="field-input-wrap">
-                        <input type="password" id="auth-login-pass" class="field-input" placeholder="••••••••">
-                    </div>
+                    <div class="field-input-wrap"><input type="password" id="auth-login-pass" class="field-input" placeholder="••••••••"></div>
                 </div>
                 <button class="btn-primary" onclick="processLogin()">دخول — Se connecter</button>
                 <div class="auth-footer-note">© Univers Informatique — +226 74 95 81 05</div>
@@ -917,21 +430,15 @@ label {
             <div id="box-register" class="auth-form hidden">
                 <div class="field-group">
                     <div class="field-label">👤 الاسم الكامل (Nom complet)</div>
-                    <div class="field-input-wrap">
-                        <input type="text" id="auth-reg-name" class="field-input" placeholder="Ex: Abdoulaye Compaoré" style="direction:ltr">
-                    </div>
+                    <div class="field-input-wrap"><input type="text" id="auth-reg-name" class="field-input" placeholder="Ex: Abdoulaye Compaoré" style="direction:ltr"></div>
                 </div>
                 <div class="field-group">
                     <div class="field-label">📱 رقم الهاتف (N° de téléphone)</div>
-                    <div class="field-input-wrap">
-                        <input type="tel" id="auth-reg-phone" class="field-input" placeholder="Ex: 70000000">
-                    </div>
+                    <div class="field-input-wrap"><input type="tel" id="auth-reg-phone" class="field-input" placeholder="Ex: 70000000"></div>
                 </div>
                 <div class="field-group">
                     <div class="field-label">🔒 كلمة المرور (Mot de passe)</div>
-                    <div class="field-input-wrap">
-                        <input type="password" id="auth-reg-pass" class="field-input" placeholder="••••••••">
-                    </div>
+                    <div class="field-input-wrap"><input type="password" id="auth-reg-pass" class="field-input" placeholder="••••••••"></div>
                 </div>
                 <button class="btn-primary" onclick="processRegister()">تسجيل — Créer mon compte</button>
                 <div class="auth-footer-note">Votre compte sera activé par l'administrateur.</div>
@@ -939,7 +446,6 @@ label {
         </div>
     </div>
 
-    <!-- ===== BIENVENUE SCREEN ===== -->
     <div id="screen-welcome" class="hidden">
         <div class="welcome-avatar-big" id="w-avatar-big">A</div>
         <div class="welcome-name" id="w-welcome-name">مرحباً</div>
@@ -947,25 +453,16 @@ label {
         <button class="welcome-start-btn" onclick="dismissWelcome()">ابدأ التعلم ✨</button>
     </div>
 
-    <!-- ===== APP HEADER ===== -->
     <div class="app-header">
-        <div class="header-side">
-            <!-- left side: back or empty -->
-        </div>
+        <div class="header-side"></div>
         <div class="header-title" id="main-title">الأبجدية</div>
         <div class="header-side">
             <button class="btn-logout" id="btn-logout-header" onclick="userLogout()" title="Déconnexion" style="display:none;">⏻</button>
         </div>
     </div>
 
-    <!-- USER CARD shown below header on alphabet view -->
-
-    <!-- ===== CONTENT ===== -->
     <div class="content" id="main-content">
-
-        <!-- ALPHABET VIEW -->
         <div id="view-alphabet">
-            <!-- user pill card -->
             <div style="background:white; border-radius:14px; border:1px solid var(--border); padding:11px 14px; margin-bottom:14px; display:flex; align-items:center; gap:12px; direction:ltr; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
                 <div style="width:42px;height:42px;border-radius:50%;background:#e0e7ff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;" id="u-avatar">U</div>
                 <div style="display:flex;flex-direction:column;">
@@ -973,38 +470,28 @@ label {
                     <span style="font-size:0.78rem;color:var(--muted);" id="u-email">...</span>
                 </div>
             </div>
-
             <div class="filter-bar">
                 <button class="btn-filter active" id="btn-all" onclick="filterAlphabet('all')">الكل</button>
                 <button class="btn-filter" id="btn-vow" onclick="filterAlphabet('voyelle')">الشمسية</button>
                 <button class="btn-filter" id="btn-con" onclick="filterAlphabet('consonne')">القمرية</button>
                 <button class="btn-filter btn-quiz-toggle" id="btn-quiz" onclick="toggleQuizMode()">Quiz</button>
             </div>
-
             <div class="arabic-grid" id="alphabet-container"></div>
-
             <div id="quiz-container" class="hidden">
-                <div class="quiz-score-bar">
-                    <span id="quiz-score">النقاط: 0</span>
-                    <span>العربية — برو</span>
-                </div>
+                <div class="quiz-score-bar"><span id="quiz-score">النقاط: 0</span><span>العربية — برو</span></div>
                 <div class="quiz-card">
-                    <div style="font-size:0.9rem;color:var(--muted);font-weight:700;">ما اسم هذا الحرف؟ / Quelle est cette lettre ?</div>
+                    <div style="font-size:0.9rem;color:var(--muted);font-weight:700;">ما اسم this الحرف؟ / Quelle est cette lettre ?</div>
                     <div class="quiz-question" id="quiz-letter">أ</div>
                     <div class="quiz-options" id="quiz-options-box"></div>
                 </div>
             </div>
         </div>
 
-        <!-- POSITIONS VIEW -->
         <div id="view-positions" class="hidden">
-            <div class="syntax-alert">
-                ℹ️ <b>تنبيه :</b> Les lettres en rouge (أ, د, ذ, ر, ز, و) ne s'attachent <b>jamais</b> avec la lettre suivante.
-            </div>
+            <div class="syntax-alert">ℹ️ <b>تنبيه :</b> Les lettres en rouge (أ, د, ذ, ر, ز, و) ne s'attachent <b>jamais</b> avec la lettre suivante.</div>
             <div class="positions-container" id="positions-list-container"></div>
         </div>
 
-        <!-- EXPRESSIONS VIEW -->
         <div id="view-expressions" class="hidden">
             <div class="expression-card">
                 <div style="font-size:0.88rem;color:var(--muted);font-weight:700;margin-bottom:18px;">العبارات التعبيرية / Expression</div>
@@ -1020,19 +507,14 @@ label {
             <div style="text-align:center;margin-top:12px;color:var(--muted);font-weight:700;" id="exp-counter">0 / 0</div>
         </div>
 
-        <!-- GAMES VIEW -->
         <div id="view-games" class="hidden">
-            <div class="quiz-score-bar">
-                <span id="game-score">النقاط: 0</span>
-                <span>اختر المعنى الصحيح</span>
-            </div>
+            <div class="quiz-score-bar"><span id="game-score">النقاط: 0</span><span>اختر المعنى الصحيح</span></div>
             <div class="quiz-card">
                 <div class="quiz-question" id="game-word" style="font-size:3.2rem;">-</div>
                 <div class="quiz-options" id="game-options-box"></div>
             </div>
         </div>
 
-        <!-- GRAMMAR VIEW -->
         <div id="view-grammar" class="hidden">
             <div class="filter-bar">
                 <button class="btn-filter active" onclick="selectAccent(this, 'َ', 'الفتحة (Fatha)')"> َ</button>
@@ -1045,7 +527,6 @@ label {
             <div class="arabic-grid" id="grammar-alphabet-container"></div>
         </div>
 
-        <!-- EDITOR VIEW -->
         <div id="view-editor" class="hidden">
             <div class="word-editor-container">
                 <div class="word-toolbar">
@@ -1063,129 +544,54 @@ label {
                 </div>
                 <div id="arabic-rainbow-editor" class="editor-rainbow-box" contenteditable="true" placeholder="ابدأ الكتابة..."></div>
             </div>
-            <div style="margin-top:10px;">
-                <button class="btn-action" onclick="saveEditorText()">حفظ النص (Enregistrer)</button>
-            </div>
+            <div style="margin-top:10px;"><button class="btn-action" onclick="saveEditorText()">حفظ النص (Enregistrer)</button></div>
             <div class="manage-title">النصوص المحفوظة</div>
             <div id="saved-notes-container"></div>
         </div>
 
-        <!-- ADMIN / ADD VIEW -->
-        <div id="view-add" class="hidden">
-            <div id="admin-login-box" class="form-card">
-                <h3>تسجيل الدخول للمشرف</h3>
-                <label>اسم المستخدم</label>
-                <input type="text" id="admin-username" class="textbox" placeholder="admin" style="direction:ltr">
-                <label>كلمة المرور</label>
-                <input type="password" id="admin-password" class="textbox" placeholder="••••••••">
-                <button class="btn-action" onclick="checkAdminLogin()">دخول (Se connecter)</button>
-            </div>
-
-            <div id="admin-content-box" class="hidden">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                    <span style="font-weight:700;color:#16a34a;font-size:0.9rem;">🔓 Mode Admin Actif</span>
-                    <button class="btn-delete" style="padding:6px 12px;margin:0;" onclick="adminLogout()">Quitter</button>
-                </div>
-                <div class="form-card">
-                    <h3>إضافة كلمة جديدة</h3>
-                    <label>الكلمة بالعربية</label>
-                    <input type="text" id="w-nko" class="textbox" placeholder="مدرسة">
-                    <label>المعنى / الترجمة</label>
-                    <input type="text" id="w-sens" class="textbox" placeholder="École" style="direction:ltr">
-                    <label>صورة (Image)</label>
-                    <input type="file" id="w-img" accept="image/*" class="textbox" style="padding:10px;">
-                    <button class="btn-action" onclick="saveWord()">إضافة (Ajouter)</button>
-                </div>
-                <div class="manage-title">إدارة الكلمات</div>
-                <div id="admin-delete-container"></div>
-            </div>
-        </div>
-
-        <!-- DICO VIEW -->
         <div id="view-dico" class="hidden">
             <div class="filter-bar">
                 <button class="btn-filter active" id="btn-dico-words" onclick="toggleDicoTab('dict')">القاموس</button>
-                <button class="btn-filter" id="btn-dico-notes" onclick="toggleDicoTab('zana')">صنا (Écrits)</button>
+                <button class="btn-filter" id="btn-dico-notes" onclick="toggleDicoTab('zana')">Écrits</button>
             </div>
             <div class="dico-container"></div>
         </div>
+    </div>
 
-    </div><!-- /content -->
-
-    <!-- ===== BOTTOM TASKBAR ===== -->
     <nav class="taskbar" id="main-taskbar">
-        <button class="task-item active" id="tab-alphabet" onclick="switchView('alphabet')">
-            <span class="tab-icon">أ</span>الأبجدية
-        </button>
-        <button class="task-item" id="tab-positions" onclick="switchView('positions')">
-            <span class="tab-icon">ﮬ</span>مواضع
-        </button>
-        <button class="task-item" id="tab-expressions" onclick="switchView('expressions')">
-            <span class="tab-icon">💬</span>عبارات
-        </button>
-        <button class="task-item" id="tab-games" onclick="switchView('games')">
-            <span class="tab-icon">🎮</span>العاب
-        </button>
-        <button class="task-item" id="tab-grammar" onclick="switchView('grammar')">
-            <span class="tab-icon">◌َ</span>الحركات
-        </button>
-        <button class="task-item" id="tab-editor" onclick="switchView('editor')">
-            <span class="tab-icon">✏️</span>الكتابة
-        </button>
-        <button class="task-item" id="tab-dico" onclick="switchView('dico')">
-            <span class="tab-icon">📖</span>قاموس
-        </button>
+        <button class="task-item active" id="tab-alphabet" onclick="switchView('alphabet')"><span class="tab-icon">أ</span>الأبجدية</button>
+        <button class="task-item" id="tab-positions" onclick="switchView('positions')"><span class="tab-icon">ﮬ</span>مواضع</button>
+        <button class="task-item" id="tab-expressions" onclick="switchView('expressions')"><span class="tab-icon">💬</span>عبارات</button>
+        <button class="task-item" id="tab-games" onclick="switchView('games')"><span class="tab-icon">🎮</span>العاب</button>
+        <button class="task-item" id="tab-grammar" onclick="switchView('grammar')"><span class="tab-icon">◌َ</span>الحركات</button>
+        <button class="task-item" id="tab-editor" onclick="switchView('editor')"><span class="tab-icon">✏️</span>الكتابة</button>
+        <button class="task-item" id="tab-dico" onclick="switchView('dico')"><span class="tab-icon">📖</span>قاموس</button>
     </nav>
-
-</div><!-- /phone -->
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, update, remove, push, get, child }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, remove, push, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ============================================================
-//  FIREBASE INIT
-// ============================================================
-const firebaseConfig = {
-    apiKey: "AIzaSyD_PLACEHOLDER_REMPLACEZ_PAR_VOTRE_CLE",
-    authDomain: "arabou-fad0c.firebaseapp.com",
-    databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/",
-    projectId: "arabou-fad0c",
-    storageBucket: "arabou-fad0c.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:000000000000000000"
-};
+const firebaseConfig = { databaseURL: "https://arabou-fad0c-default-rtdb.firebaseio.com/" };
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-// ============================================================
-//  CONFIG ADMIN (vérification locale seulement)
-// ============================================================
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "1234";
-
-// ============================================================
-//  ÉTAT GLOBAL
-// ============================================================
-let activeUser        = null;
-let activeUserKey     = null;   // clé Firebase du client connecté
-let isQuizMode        = false;
-let quizScore         = 0;
+let activeUser = null;
+let activeUserKey = null;
+let isQuizMode = false;
+let quizScore = 0;
 let currentQuizLetter = null;
-let currentDicoView   = 'dict';
+let currentDicoView = 'dict';
 let currentExpressionIndex = 0;
-let gameScore         = 0;
-let currentGameWord   = null;
-let dicoCache         = [];     // cache local du dictionnaire Firebase
-let notesCache        = [];     // cache local des notes de l'utilisateur connecté
+let gameScore = 0;
+let currentGameWord = null;
+let dicoCache = [];
+let notesCache = [];
 
 const rainbowColors = ['#ef4444','#f97316','#f59e0b','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#d946ef','#ec4899'];
 function getRainbowColor(i) { return rainbowColors[i % rainbowColors.length]; }
 
-// ============================================================
-//  ALPHABETS (données statiques, pas de stockage)
-// ============================================================
 const arabicAlphabet = [
     { letter:"أ",  type:"voyelle",  latin:"Alif",  cons:"'",    iso:"أ",  ini:"أـ",  med:"ـأـ", fin:"ـأ",  noLinkAfter:true },
     { letter:"ب",  type:"consonne", latin:"Ba",    cons:"B",    iso:"ب",  ini:"بـ",  med:"ـبـ", fin:"ـب"  },
@@ -1217,43 +623,16 @@ const arabicAlphabet = [
     { letter:"ي",  type:"consonne", latin:"Ya",    cons:"Y",    iso:"ي",  ini:"يـ",  med:"ـيـ", fin:"ـي"  }
 ];
 
-// Mots par défaut du dictionnaire
 const DEFAULT_DICO = [
     { nko:"آكُلُ", sens:"Je mange", img:"", isDefault:true },
     { nko:"أَشْرَبُ", sens:"Je bois", img:"", isDefault:true },
     { nko:"أَجْرِي", sens:"Je cours", img:"", isDefault:true },
     { nko:"أَمْشِي", sens:"Je marche", img:"", isDefault:true },
     { nko:"أَتَكَلَّمُ", sens:"Je parle", img:"", isDefault:true },
-    { nko:"أُشَاهِدُ", sens:"Je regarde", img:"", isDefault:true },
-    { nko:"أَدْرُسُ", sens:"J'étudie", img:"", isDefault:true },
-    { nko:"أَعْمَلُ", sens:"Je travaille", img:"", isDefault:true },
-    { nko:"أَكْتُبُ", sens:"J'écris", img:"", isDefault:true },
-    { nko:"أَقْرَأُ", sens:"Je lis", img:"", isDefault:true },
-    { nko:"أَنَامُ", sens:"Je dors", img:"", isDefault:true },
-    { nko:"أَلْعَبُ", sens:"Je joue", img:"", isDefault:true },
-    { nko:"أُحِبُّ", sens:"J'aime", img:"", isDefault:true },
-    { nko:"مَا هَذَا؟", sens:"C'est quoi ça ?", img:"", isDefault:true },
-    { nko:"أَنَا سَعِيدٌ", sens:"Je suis heureux", img:"", isDefault:true },
-    { nko:"أَنَا تَعْبَانٌ", sens:"Je suis fatigué", img:"", isDefault:true },
-    { nko:"أَنَا جَائِعٌ", sens:"J'ai faim", img:"", isDefault:true },
-    { nko:"أَنَا عَطْشَانُ", sens:"J'ai soif", img:"", isDefault:true },
-    { nko:"أَيْنَ؟", sens:"Où ?", img:"", isDefault:true },
-    { nko:"مَتَى؟", sens:"Quand ?", img:"", isDefault:true },
-    { nko:"لِمَاذَا؟", sens:"Pourquoi ?", img:"", isDefault:true },
-    { nko:"كَيْفَ؟", sens:"Comment ?", img:"", isDefault:true },
-    { nko:"مَنْ؟", sens:"Qui ?", img:"", isDefault:true },
-    { nko:"مَاذَا؟", sens:"Quoi ?", img:"", isDefault:true },
     { nko:"شُكْرًا", sens:"Merci", img:"", isDefault:true },
-    { nko:"مَرْحَبًا", sens:"Bonjour", img:"", isDefault:true },
-    { nko:"مَعَ السَّلَامَةِ", sens:"Au revoir", img:"", isDefault:true },
-    { nko:"بِالطَّبْعِ", sens:"Bien sûr", img:"", isDefault:true },
-    { nko:"لَا بَأْسَ", sens:"Ça ne me dérange pas", img:"", isDefault:true },
-    { nko:"لَا أَفْهَمُ", sens:"Je ne comprends pas", img:"", isDefault:true }
+    { nko:"مَرْحَبًا", sens:"Bonjour", img:"", isDefault:true }
 ];
 
-// ============================================================
-//  AUTH — INSCRIPTION
-// ============================================================
 function switchAuthTab(tab) {
     document.getElementById('btn-tab-login').classList.toggle('active', tab==='login');
     document.getElementById('btn-tab-register').classList.toggle('active', tab==='register');
@@ -1265,92 +644,68 @@ async function processRegister() {
     const name  = document.getElementById('auth-reg-name').value.trim();
     const phone = document.getElementById('auth-reg-phone').value.trim();
     const pass  = document.getElementById('auth-reg-pass').value;
-    if (!name||!phone||!pass) { alert("يرجى ملء جميع الحقول\nVeuillez remplir tous les champs."); return; }
+    if (!name||!phone||!pass) { alert("Veuillez remplir tous les champs."); return; }
 
-    const btnReg = document.querySelector('#box-register .btn-primary');
-    if (btnReg) { btnReg.disabled = true; btnReg.textContent = "جارٍ التسجيل..."; }
+    const snap = await get(ref(db, 'clients'));
+    const data = snap.val() || {};
+    const existing = Object.values(data).find(c => c.phone === phone);
+    if (existing) { alert("Ce numéro est déjà enregistré !"); return; }
 
-    try {
-        const snap = await get(ref(db, 'clients'));
-        const data = snap.val() || {};
-        const existing = Object.values(data).find(c => c.phone === phone);
-        if (existing) { alert("هذا الرقم مسجل بالفعل !\nCe numéro est déjà enregistré."); return; }
+    const ids = Object.values(data).map(c => parseInt(c.id) || 100);
+    const newId = ids.length ? Math.max(...ids) + 1 : 101;
 
-        const ids = Object.values(data).map(c => parseInt(c.id) || 100);
-        const newId = ids.length ? Math.max(...ids) + 1 : 101;
+    const newClientRef = push(ref(db, 'clients'));
+    await set(newClientRef, {
+        id: newId,
+        nom: name,
+        phone: phone,
+        password: pass,
+        date: new Date().toISOString().split('T')[0],
+        status: "En Attente"
+    });
 
-        const newClientRef = push(ref(db, 'clients'));
-        await set(newClientRef, {
-            id: newId, nom: name, phone: phone, password: pass,
-            date: new Date().toISOString().split('T')[0], status: "En Attente"
-        });
-
-        alert("✅ تم التسجيل بنجاح! حسابك في انتظار التفعيل من المسؤول.\n📞 Contactez: +226 74 95 81 05\nUne fois validé, connectez-vous.");
-        switchAuthTab('login');
-    } catch(err) {
-        console.error("Erreur Firebase register:", err);
-        alert("❌ Erreur de connexion Firebase.\nVérifiez que l'apiKey est bien configurée dans le code.\n\nDétail: " + err.message);
-    } finally {
-        if (btnReg) { btnReg.disabled = false; btnReg.textContent = "إنشاء الحساب"; }
-    }
+    alert("✅ Inscription réussie ! Votre compte est en attente d'activation par le gestionnaire.");
+    switchAuthTab('login');
 }
 
-// ============================================================
-//  AUTH — CONNEXION
-// ============================================================
 async function processLogin() {
     const phone = document.getElementById('auth-login-phone').value.trim();
     const pass  = document.getElementById('auth-login-pass').value;
-    if (!phone||!pass) { alert("يرجى ملء جميع الحقول"); return; }
+    if (!phone||!pass) { alert("Veuillez remplir tous les champs."); return; }
 
-    const btnLogin = document.querySelector('#box-login .btn-primary');
-    if (btnLogin) { btnLogin.disabled = true; btnLogin.textContent = "جارٍ التحقق..."; }
+    const snap = await get(ref(db, 'clients'));
+    const data = snap.val() || {};
+    const entry = Object.entries(data).find(([k, c]) => c.phone === phone && c.password === pass);
 
-    try {
-        const snap = await get(ref(db, 'clients'));
-        const data = snap.val() || {};
-        const entry = Object.entries(data).find(([k, c]) => c.phone === phone && c.password === pass);
+    if (!entry) { alert("❌ Numéro de téléphone ou mot de passe incorrect."); return; }
+    const [key, client] = entry;
 
-        if (!entry) { alert("❌ رقم الهاتف أو كلمة المرور خاطئة\nNuméro ou mot de passe incorrect."); return; }
-
-        const [key, client] = entry;
-
-        if (client.status === "Bloquer") {
-            alert("🚫 حسابك محظور. يرجى التواصل مع المسؤول.\nVotre accès a été bloqué.\n📞 +226 74 95 81 05");
-            return;
-        }
-        if (client.status !== "Valider") {
-            alert("⏳ حسابك قيد الانتظار.\nVotre compte est en attente de validation.\n📞 Contactez : +226 74 95 81 05");
-            return;
-        }
-
-        activeUser    = { name: client.nom, phone: client.phone, email: "Tel: " + client.phone, avatarLetter: client.nom.charAt(0).toUpperCase() };
-        activeUserKey = key;
-
-        onValue(ref(db, 'clients/' + key), snap2 => {
-            if (!activeUser) return;
-            const updated = snap2.val();
-            if (!updated) { alert("⚠️ Votre compte a été supprimé."); userLogout(); return; }
-            if (updated.status === "Bloquer") {
-                alert("🚫 Votre accès a été révoqué par l'administrateur. Vous allez être déconnecté.");
-                userLogout();
-            }
-        });
-
-        document.getElementById('screen-auth').classList.add('hidden');
-        showWelcomeScreen();
-    } catch(err) {
-        console.error("Erreur Firebase login:", err);
-        alert("❌ Erreur de connexion Firebase.\nVérifiez que l'apiKey est bien configurée dans le code.\n\nDétail: " + err.message);
-    } finally {
-        if (btnLogin) { btnLogin.disabled = false; btnLogin.textContent = "تسجيل الدخول"; }
+    if (client.status === "Bloquer") {
+        alert("🚫 Votre accès a été bloqué par le gestionnaire.");
+        return;
     }
+    if (client.status !== "Valider") {
+        alert("⏳ Compte en attente de droits d'accès.");
+        return;
+    }
+
+    activeUser = { name: client.nom, phone: client.phone, email: "Tel: " + client.phone, avatarLetter: client.nom.charAt(0).toUpperCase() };
+    activeUserKey = key;
+
+    onValue(ref(db, 'clients/' + key), snap2 => {
+        if (!activeUser) return;
+        const updated = snap2.val();
+        if (!updated) { alert("⚠️ Compte supprimé."); userLogout(); return; }
+        if (updated.status === "Bloquer") { alert("🚫 Accès révoqué par le gestionnaire."); userLogout(); }
+    });
+
+    document.getElementById('screen-auth').classList.add('hidden');
+    showWelcomeScreen();
 }
 
 function showWelcomeScreen() {
     document.getElementById('w-avatar-big').innerText = activeUser.avatarLetter;
     document.getElementById('w-welcome-name').innerText = "مرحباً، " + activeUser.name + " !";
-    document.getElementById('w-welcome-sub').innerText = "Bienvenue dans l'application !";
     document.getElementById('screen-welcome').classList.remove('hidden');
 }
 
@@ -1366,7 +721,6 @@ function dismissWelcome() {
 }
 
 function userLogout() {
-    if (activeUser && !confirm("Voulez-vous vous déconnecter ?")) return;
     activeUser    = null;
     activeUserKey = null;
     document.getElementById('main-taskbar').classList.remove('visible');
@@ -1378,35 +732,22 @@ function userLogout() {
     document.getElementById('screen-welcome').classList.add('hidden');
 }
 
-// ============================================================
-//  VUES
-// ============================================================
 function switchView(viewName) {
-    ['alphabet','positions','expressions','games','grammar','editor','add','dico'].forEach(v => {
+    ['alphabet','positions','expressions','games','grammar','editor','dico'].forEach(v => {
         document.getElementById('view-'+v).classList.toggle('hidden', v!==viewName);
     });
     document.querySelectorAll('.taskbar .task-item').forEach(i=>i.classList.remove('active'));
     const tab = document.getElementById('tab-'+viewName);
     if(tab) tab.classList.add('active');
-    const headers = {
-        alphabet:"الأبجدية", positions:"مواضع الحروف", expressions:"العبارات",
-        games:"لعبة الكلمات", grammar:"الحركات", editor:"الكتابة", add:"إضافة كلمات", dico:"القاموس"
-    };
+    const headers = { alphabet:"الأبجدية", positions:"مواضع الحروف", expressions:"العبارات", games:"لعبة الكلمات", grammar:"الحركات", editor:"الكتابة", dico:"القاموس" };
     document.getElementById('main-title').innerText = headers[viewName] || "العربية";
     if(viewName==='dico') toggleDicoTab(currentDicoView);
     if(viewName==='positions') renderPositionsTable();
     if(viewName==='expressions') renderExpressionCard();
     if(viewName==='games') initWordGame();
-    if(viewName==='add') {
-        if(sessionStorage.getItem('isAdminConnected')==='true') showAdminDashboard();
-        else adminLogout();
-    }
     if(viewName==='editor') renderSavedNotes();
 }
 
-// ============================================================
-//  ALPHABET
-// ============================================================
 function renderAlphabet(filter) {
     const c = document.getElementById('alphabet-container'); if(!c) return;
     const items = filter==='all' ? arabicAlphabet : arabicAlphabet.filter(i=>i.type===filter);
@@ -1431,9 +772,6 @@ function filterAlphabet(type) {
     renderAlphabet(type);
 }
 
-// ============================================================
-//  QUIZ
-// ============================================================
 function toggleQuizMode() {
     isQuizMode = !isQuizMode;
     document.querySelectorAll('#view-alphabet .btn-filter').forEach(b=>b.classList.remove('active'));
@@ -1472,15 +810,12 @@ function verifyQuizAnswer(selected, btn) {
         updateScoreDisplay(); setTimeout(generateNextQuizQuestion, 600);
     } else {
         btn.style.background="#fee2e2"; btn.style.borderColor="#ef4444";
-        alert(`خطأ! الإجابة: ${currentQuizLetter.latin}`); generateNextQuizQuestion();
+        alert(`Faux ! La réponse était : ${currentQuizLetter.latin}`); generateNextQuizQuestion();
     }
 }
 
 function updateScoreDisplay() { document.getElementById('quiz-score').innerText = `النقاط: ${quizScore}`; }
 
-// ============================================================
-//  POSITIONS
-// ============================================================
 function renderPositionsTable() {
     const c = document.getElementById('positions-list-container'); if(!c) return;
     c.innerHTML = arabicAlphabet.map((item,idx) => {
@@ -1500,9 +835,6 @@ function renderPositionsTable() {
     }).join('');
 }
 
-// ============================================================
-//  GRAMMAIRE
-// ============================================================
 function getAccentedLatin(item, accent) {
     const c = item.cons;
     if(accent==='َ') return c+'a';
@@ -1529,32 +861,21 @@ function selectAccent(button, accent, infoText) {
     renderGrammarAlphabet(accent);
 }
 
-// ============================================================
-//  DICO — Firebase (écoute temps réel)
-// ============================================================
-function getDico() { return dicoCache; }
-
-// Écouter le dictionnaire partagé en temps réel
 onValue(ref(db, 'dictionnaire'), snap => {
     const data = snap.val();
     if (data) {
         dicoCache = Object.entries(data).map(([k, v]) => ({ _key: k, ...v }));
     } else {
-        // Initialiser avec les mots par défaut si vide
         dicoCache = [];
-        DEFAULT_DICO.forEach(word => {
-            push(ref(db, 'dictionnaire'), word);
-        });
+        DEFAULT_DICO.forEach(word => { push(ref(db, 'dictionnaire'), word); });
     }
-    // Rafraîchir les vues qui dépendent du dico
     if(document.getElementById('view-expressions') && !document.getElementById('view-expressions').classList.contains('hidden')) renderExpressionCard();
     if(document.getElementById('view-dico') && !document.getElementById('view-dico').classList.contains('hidden')) renderDico();
-    if(document.getElementById('admin-delete-container')) renderAdminDelete();
 });
 
 function renderDico() {
     const c = document.querySelector('.dico-container'); if(!c) return;
-    if(dicoCache.length===0) { c.innerHTML = `<div style="text-align:center;color:var(--muted);margin-top:14px;">لم يتم العثور على كلمات</div>`; return; }
+    if(dicoCache.length===0) { c.innerHTML = `<div style="text-align:center;color:var(--muted);margin-top:14px;">Aucun mot disponible.</div>`; return; }
     c.innerHTML = dicoCache.map(item=>`
         <div class="word-item">
             <div class="word-row">
@@ -1565,11 +886,8 @@ function renderDico() {
         </div>`).join('');
 }
 
-// ============================================================
-//  EXPRESSIONS
-// ============================================================
 function renderExpressionCard() {
-    const dico = getDico();
+    const dico = dicoCache;
     if(dico.length===0) {
         document.getElementById('exp-card-arabic').innerText = "لا توجد كلمات";
         document.getElementById('exp-card-french').innerText = "Aucun mot disponible";
@@ -1588,13 +906,10 @@ function renderExpressionCard() {
 function nextExpression() { currentExpressionIndex++; renderExpressionCard(); }
 function prevExpression() { currentExpressionIndex--; renderExpressionCard(); }
 
-// ============================================================
-//  JEU DE MOTS
-// ============================================================
 function initWordGame() {
-    const dico = getDico();
+    const dico = dicoCache;
     if(dico.length<1) {
-        document.getElementById('game-word').innerText = "أضف كلمات أولاً";
+        document.getElementById('game-word').innerText = "Pas de mots";
         document.getElementById('game-options-box').innerHTML = ""; return;
     }
     const ri = Math.floor(Math.random()*dico.length);
@@ -1602,7 +917,7 @@ function initWordGame() {
     document.getElementById('game-word').innerText = currentGameWord.nko;
     document.getElementById('game-word').style.color = getRainbowColor(ri);
     let choices = [currentGameWord.sens];
-    const backup = ["Je mange","Je bois","Je cours","École","Merci","Pourquoi"];
+    const backup = ["Je mange","Je bois","Je cours","École","Merci"];
     while(choices.length<4) {
         let c = dico.length>=4 ? dico[Math.floor(Math.random()*dico.length)].sens : backup[Math.floor(Math.random()*backup.length)];
         if(!choices.includes(c)) choices.push(c);
@@ -1619,27 +934,24 @@ function verifyGameAnswer(selected, btn) {
         setTimeout(initWordGame, 800);
     } else {
         btn.style.background="#fee2e2"; btn.style.borderColor="#ef4444";
-        alert(`خطأ! المعنى: ${currentGameWord.sens}`); initWordGame();
+        alert(`Faux ! Le sens était : ${currentGameWord.sens}`); initWordGame();
     }
 }
 
-// ============================================================
-//  ÉDITEUR & NOTES — Firebase (par utilisateur connecté)
-// ============================================================
 function formatDoc(cmd) { document.execCommand(cmd,false,null); document.getElementById('arabic-rainbow-editor').focus(); }
 function changeTextColor(hex) { document.execCommand('foreColor',false,hex); document.getElementById('arabic-rainbow-editor').focus(); }
 
 async function saveEditorText() {
-    if (!activeUserKey) { alert("Connectez-vous pour sauvegarder."); return; }
-    const ed  = document.getElementById('arabic-rainbow-editor');
+    if (!activeUserKey) return;
+    const ed = document.getElementById('arabic-rainbow-editor');
     const txt = ed.innerText.trim();
     const html = ed.innerHTML;
-    if(!txt) { alert("اكتب نصاً أولاً."); return; }
+    if(!txt) return;
     const now = new Date();
-    const ts  = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const ts = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
     await push(ref(db, 'notes/' + activeUserKey), { text: txt, html, date: ts });
     ed.innerHTML = "";
-    alert("تم الحفظ بنجاح!");
+    alert("Enregistré avec succès !");
 }
 
 function renderSavedNotes() {
@@ -1649,7 +961,7 @@ function renderSavedNotes() {
     onValue(ref(db, 'notes/' + activeUserKey), snap => {
         const data = snap.val();
         if (!data) {
-            c.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:0.9rem;margin-top:12px;">لا توجد نصوص محفوظة</div>`;
+            c.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:0.9rem;margin-top:12px;">Aucun texte sauvegardé</div>`;
             notesCache = [];
             return;
         }
@@ -1657,13 +969,13 @@ function renderSavedNotes() {
         c.innerHTML = notesCache.map((n,i)=>`
             <div class="note-paper">
                 <div class="note-date">${n.date}</div>
-                <div class="note-text" style="direction:rtl;">${n.html}</div>
+                <div class="note-text">${n.html}</div>
                 <div class="note-actions">
-                    <button class="btn-note-opt btn-load" onclick="restoreNote(${i})">عرض</button>
-                    <button class="btn-note-opt btn-trash" onclick="deleteNote('${n._key}')">حذف</button>
+                    <button class="btn-note-opt btn-load" onclick="restoreNote(${i})">Afficher</button>
+                    <button class="btn-note-opt btn-trash" onclick="deleteNote('${n._key}')">Supprimer</button>
                 </div>
             </div>`).join('');
-    }, { onlyOnce: false });
+    });
 }
 
 function restoreNote(i) {
@@ -1671,84 +983,13 @@ function restoreNote(i) {
 }
 
 async function deleteNote(key) {
-    if(!confirm("هل تريد الحذف نهائياً؟")) return;
+    if(!confirm("Supprimer définitivement cet écrit ?")) return;
     await remove(ref(db, 'notes/' + activeUserKey + '/' + key));
-}
-
-// ============================================================
-//  ADMIN DICO (dans l'app client, onglet "+")
-// ============================================================
-function checkAdminLogin() {
-    if(document.getElementById('admin-username').value.trim()===ADMIN_USER && document.getElementById('admin-password').value===ADMIN_PASS) {
-        sessionStorage.setItem('isAdminConnected','true'); showAdminDashboard(); alert("تم تسجيل الدخول بنجاح!");
-    } else { alert("خطأ في بيانات الدخول"); }
-}
-
-function showAdminDashboard() {
-    document.getElementById('admin-login-box').classList.add('hidden');
-    document.getElementById('admin-content-box').classList.remove('hidden');
-    renderAdminDelete();
-}
-
-function adminLogout() {
-    sessionStorage.removeItem('isAdminConnected');
-    document.getElementById('admin-username').value="";
-    document.getElementById('admin-password').value="";
-    document.getElementById('admin-login-box').classList.remove('hidden');
-    document.getElementById('admin-content-box').classList.add('hidden');
-}
-
-function renderAdminDelete() {
-    const c = document.getElementById('admin-delete-container'); if(!c) return;
-    c.innerHTML = dicoCache.map((item,i)=>`
-        <div class="word-item">
-            <div class="word-row">
-                <div class="word-col"><span class="word-arabic">${item.nko}</span></div>
-                ${item.isDefault?`<div class="lock-badge">🔒 Protégé</div>`:`<button class="btn-delete" onclick="deleteWord('${item._key}')">حذف</button>`}
-            </div>
-            ${item.img?`<div class="word-img-container"><img src="${item.img}" class="word-thumb" style="height:55px;"></div>`:''} 
-        </div>`).join('');
-}
-
-async function deleteWord(key) {
-    const item = dicoCache.find(d => d._key === key);
-    if(item && item.isDefault) { alert("لا يمكن حذف العبارات الافتراضية!"); return; }
-    await remove(ref(db, 'dictionnaire/' + key));
-}
-
-async function saveWord() {
-    const nko  = document.getElementById('w-nko');
-    const sens = document.getElementById('w-sens');
-    const img  = document.getElementById('w-img');
-    if(!nko.value.trim()||!sens.value.trim()) { alert("يرجى ملء جميع الحقول."); return; }
-
-    const saveToFb = async (b64="") => {
-        await push(ref(db, 'dictionnaire'), { nko: nko.value.trim(), sens: sens.value.trim(), img: b64, isDefault: false });
-        nko.value=""; sens.value=""; img.value="";
-        alert("تمت الإضافة بنجاح!");
-    };
-
-    if(img.files && img.files[0]) {
-        const r = new FileReader();
-        r.onload = e => {
-            const io = new Image(); io.src = e.target.result;
-            io.onload = () => {
-                const cv = document.createElement('canvas');
-                const ctx = cv.getContext('2d');
-                cv.width=300; cv.height=io.height*(300/io.width);
-                ctx.drawImage(io,0,0,cv.width,cv.height);
-                saveToFb(cv.toDataURL('image/jpeg',0.7));
-            };
-        };
-        r.readAsDataURL(img.files[0]);
-    } else {
-        saveToFb();
-    }
 }
 
 function renderDicoNotes() {
     const c = document.querySelector('.dico-container'); if(!c) return;
-    if(notesCache.length===0) { c.innerHTML = `<div style="text-align:center;color:var(--muted);margin-top:14px;">لا توجد نصوص</div>`; return; }
+    if(notesCache.length===0) { c.innerHTML = `<div style="text-align:center;color:var(--muted);margin-top:14px;">Aucun écrit trouvé.</div>`; return; }
     c.innerHTML = notesCache.map(n=>`
         <div class="word-item">
             <div class="note-date">${n.date}</div>
@@ -1763,15 +1004,11 @@ function toggleDicoTab(tab) {
     tab==='dict' ? renderDico() : renderDicoNotes();
 }
 
-// ============================================================
-//  INIT
-// ============================================================
 window.onload = () => {
     renderAlphabet('all');
     renderGrammarAlphabet('َ');
 };
 
-// Exposer les fonctions globales nécessaires aux onclick HTML
 window.switchAuthTab    = switchAuthTab;
 window.processRegister  = processRegister;
 window.processLogin     = processLogin;
@@ -1791,10 +1028,6 @@ window.changeTextColor  = changeTextColor;
 window.saveEditorText   = saveEditorText;
 window.restoreNote      = restoreNote;
 window.deleteNote       = deleteNote;
-window.checkAdminLogin  = checkAdminLogin;
-window.adminLogout      = adminLogout;
-window.saveWord         = saveWord;
-window.deleteWord       = deleteWord;
 window.toggleDicoTab    = toggleDicoTab;
 </script>
 </body>

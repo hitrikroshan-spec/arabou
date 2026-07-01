@@ -1310,6 +1310,9 @@ async function processLogin(){
     activeUser = { name:client.nom, phone:client.phone, email:"Tel: "+client.phone, avatarLetter:client.nom.charAt(0).toUpperCase(), abonnement: abo };
     activeUserKey = key;
 
+    // Sauvegarde locale de la session (persiste après fermeture de l'appli)
+    localStorage.setItem('savedUserKey', key);
+
     // Écoute temps réel : blocage ou révocation
     onValue(ref(db,'clients/'+key), snap2=>{
         if(!activeUser) return;
@@ -1322,8 +1325,54 @@ async function processLogin(){
     showWelcomeScreen();
 }
 
+/* ============================================================
+   AUTO-CONNEXION — session sauvegardée localement
+============================================================ */
+async function attemptAutoLogin(){
+    const key = localStorage.getItem('savedUserKey');
+    if(!key) return;
+    try{
+        const snap = await get(ref(db,'clients/'+key));
+        const client = snap.val();
+        if(!client){ localStorage.removeItem('savedUserKey'); return; }
+        if(client.status==="Bloquer"){ localStorage.removeItem('savedUserKey'); return; }
+        if(client.status!=="Valider"){ localStorage.removeItem('savedUserKey'); return; }
+        const abo = client.abonnement || {};
+        if(abo.fin && new Date(abo.fin) < new Date()){ localStorage.removeItem('savedUserKey'); return; }
+
+        activeUser = { name:client.nom, phone:client.phone, email:"Tel: "+client.phone, avatarLetter:client.nom.charAt(0).toUpperCase(), abonnement: abo };
+        activeUserKey = key;
+
+        // Écoute temps réel : blocage ou révocation
+        onValue(ref(db,'clients/'+key), snap2=>{
+            if(!activeUser) return;
+            const u = snap2.val();
+            if(!u){ alert("⚠️ Compte supprimé."); _forceLogout(); return; }
+            if(u.status==="Bloquer"){ alert("🚫 Votre accès a été révoqué. Vous êtes déconnecté."); _forceLogout(); }
+        });
+
+        // Entrée directe dans l'appli (sans re-saisie, sans écran d'accueil)
+        document.getElementById('screen-auth').classList.add('hidden');
+        document.getElementById('main-taskbar').classList.add('visible');
+        document.getElementById('main-content').classList.add('with-taskbar');
+        document.getElementById('btn-logout-header').style.display='flex';
+        document.getElementById('u-name').innerText  = activeUser.name;
+        document.getElementById('u-email').innerText = activeUser.email;
+        document.getElementById('u-avatar').innerText= activeUser.avatarLetter;
+        const badge = abo.type && abo.type!=='Aucun'
+            ? `<span style="font-size:0.7rem;background:#d1fae5;color:#065f46;border-radius:20px;padding:2px 8px;font-weight:700;">✅ ${abo.type}</span>`
+            : `<span style="font-size:0.7rem;background:#fee2e2;color:#991b1b;border-radius:20px;padding:2px 8px;font-weight:700;">⚠️ Sans abonnement</span>`;
+        const badgeEl = document.getElementById('u-abo-badge');
+        if(badgeEl) badgeEl.innerHTML = badge;
+        switchView('alphabet');
+    }catch(e){
+        console.error('Auto-login échoué :', e);
+    }
+}
+
 function _forceLogout(){
     activeUser=null; activeUserKey=null;
+    localStorage.removeItem('savedUserKey');
     document.getElementById('main-taskbar').classList.remove('visible');
     document.getElementById('main-content').classList.remove('with-taskbar');
     document.getElementById('btn-logout-header').style.display='none';
@@ -1651,7 +1700,7 @@ async function saveWord(){
 /* ============================================================
    INIT
 ============================================================ */
-window.onload = ()=>{ renderAlphabet('all'); renderGrammarAlphabet('َ'); };
+window.onload = ()=>{ renderAlphabet('all'); renderGrammarAlphabet('َ'); attemptAutoLogin(); };
 
 // Exposition globale (nécessaire car type="module")
 Object.assign(window,{

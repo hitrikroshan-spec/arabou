@@ -103,6 +103,23 @@
         /* ── PROGRESS ABONNEMENT ── */
         .abo-progress{width:100%;background:#e2e8f0;border-radius:20px;height:6px;margin-top:4px;}
         .abo-progress-fill{height:6px;border-radius:20px;background:#10b981;transition:width .3s;}
+
+        /* ── CORAN PAGE ── */
+        .surah-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-top:14px;overflow:hidden;}
+        .surah-card-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;background:#f8fafc;}
+        .surah-card-head:hover{background:#f1f5f9;}
+        .surah-name{font-weight:700;color:#0f172a;font-size:1rem;}
+        .surah-count{font-size:0.78rem;color:#64748b;margin-top:2px;}
+        .surah-actions{display:flex;gap:6px;align-items:center;}
+        .surah-ayahs{display:none;padding:6px 18px 16px;}
+        .surah-ayahs.open{display:block;}
+        .ayah-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid #f1f5f9;}
+        .ayah-row-num{flex:0 0 26px;height:26px;border-radius:50%;background:#e0e7ff;color:#2563eb;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+        .ayah-row-ar{font-size:1.05rem;color:#0f172a;direction:rtl;text-align:right;flex:1;}
+        .ayah-row-fr{font-size:0.72rem;color:#94a3b8;margin-top:3px;direction:ltr;text-align:left;}
+        textarea.ta-coran{width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:inherit;resize:vertical;min-height:110px;}
+        textarea.ta-coran:focus{outline:none;border-color:#2563eb;}
+        .form-hint{font-size:0.72rem;color:#94a3b8;margin-top:2px;}
     </style>
 </head>
 <body>
@@ -124,6 +141,9 @@
     </button>
     <button class="nav-item" onclick="showPage('dico')" id="nav-dico">
         <span class="icon">📚</span> Dictionnaire
+    </button>
+    <button class="nav-item" onclick="showPage('coran')" id="nav-coran">
+        <span class="icon">🕌</span> Coran
     </button>
 
     <hr class="sidebar-sep">
@@ -231,6 +251,27 @@
                 <p style="color:#64748b;text-align:center;">Chargement…</p>
             </div>
         </div>
+    </div>
+
+    <!-- ───────────────────────────────────────
+         PAGE 4 : CORAN
+    ─────────────────────────────────────────── -->
+    <div class="page" id="page-coran">
+        <div class="page-header">
+            <div>
+                <div class="page-title">Gestion du Coran</div>
+                <div class="page-subtitle">Écrivez une sourate complète — le client la lira verset par verset dans l'appli</div>
+            </div>
+            <button class="btn-add" onclick="openModalAddSurah()">＋ Ajouter une sourate</button>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="stat-card blue"><div class="stat-label">Total Sourates</div><div class="stat-val" id="sc-total">—</div></div>
+            <div class="stat-card green"><div class="stat-label">Total Versets</div><div class="stat-val" id="sc-ayahs">—</div></div>
+            <div class="stat-card amber"><div class="stat-label">Ajoutées (hors défaut)</div><div class="stat-val" id="sc-custom">—</div></div>
+        </div>
+
+        <div id="coran-list-container"></div>
     </div>
 
 </div><!-- /main -->
@@ -360,6 +401,35 @@
     </div>
 </div>
 
+<!-- Modal : Ajouter une Sourate complète -->
+<div class="modal-overlay" id="modal-surah">
+    <div class="modal" style="width:620px;">
+        <h3>🕌 Ajouter une Sourate</h3>
+        <div class="form-group">
+            <label>Nom de la sourate</label>
+            <input type="text" id="ms-nom" placeholder="مثال — Al-Fâtiha" style="direction:rtl;">
+        </div>
+        <div class="form-group">
+            <label>Texte arabe — un verset par ligne</label>
+            <textarea class="ta-coran" id="ms-arabe" style="direction:rtl;text-align:right;font-size:1.1rem;" placeholder="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ
+..."></textarea>
+            <div class="form-hint">Écrivez toute la sourate ici. Chaque ligne = un verset (numéroté automatiquement).</div>
+        </div>
+        <div class="form-group">
+            <label>Traduction française — une ligne par verset (même ordre)</label>
+            <textarea class="ta-coran" id="ms-francais" style="direction:ltr;" placeholder="Au nom de Dieu, le Tout Miséricordieux, le Très Miséricordieux.
+Louange à Dieu, Seigneur des mondes.
+..."></textarea>
+            <div class="form-hint">La ligne 1 traduit le verset 1, la ligne 2 le verset 2, etc. Affichée en petit texte chez le client.</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-red" onclick="closeModal('modal-surah')">Annuler</button>
+            <button class="btn btn-primary" onclick="saveSurah()">Enregistrer la Sourate</button>
+        </div>
+    </div>
+</div>
+
 <!-- ═══════════════════════════════════════════
      FIREBASE SCRIPT
 ════════════════════════════════════════════ -->
@@ -388,6 +458,7 @@ window.showPage = id => {
     document.getElementById('nav-'+id).classList.add('active');
     if(id==='dico') renderDico();
     if(id==='abonnements') renderAbonnements();
+    if(id==='coran') renderCoranList();
 };
 
 /* ══════════════════════════════════════
@@ -663,6 +734,84 @@ window._deleteWord = async key=>{
     if(!confirm("Supprimer ce mot du dictionnaire ?")) return;
     await remove(ref(db,'dictionnaire/'+key));
     showNotif('🗑️ Mot supprimé.');
+};
+
+/* ══════════════════════════════════════
+   CORAN
+══════════════════════════════════════ */
+let coranCache = [];
+onValue(ref(db,'coran'), snap=>{
+    const data=snap.val()||{};
+    coranCache=Object.entries(data).map(([k,v])=>({_key:k,...v}));
+    renderCoranList();
+});
+
+function renderCoranList(){
+    const c=document.getElementById('coran-list-container'); if(!c) return;
+    const totalAyahs = coranCache.reduce((sum,s)=>sum+((s.ayahs||[]).length),0);
+    const custom = coranCache.filter(s=>!s.isDefault).length;
+    document.getElementById('sc-total').innerText  = coranCache.length;
+    document.getElementById('sc-ayahs').innerText  = totalAyahs;
+    document.getElementById('sc-custom').innerText = custom;
+
+    if(!coranCache.length){ c.innerHTML='<p style="color:#64748b;text-align:center;margin-top:20px;">Aucune sourate. Ajoutez-en une.</p>'; return; }
+
+    c.innerHTML = coranCache.map(s=>{
+        const ayahs = s.ayahs||[];
+        return `<div class="surah-card">
+            <div class="surah-card-head" onclick="_toggleSurah('${s._key}')">
+                <div>
+                    <div class="surah-name">${s.nom}${s.isDefault?' 🔒':''}</div>
+                    <div class="surah-count">${ayahs.length} verset${ayahs.length>1?'s':''}</div>
+                </div>
+                <div class="surah-actions">
+                    ${s.isDefault
+                        ? '<span class="lock-icon" title="Sourate par défaut protégée">🔒</span>'
+                        : `<button class="btn btn-red" onclick="event.stopPropagation();_deleteSurah('${s._key}')">Supprimer</button>`}
+                </div>
+            </div>
+            <div class="surah-ayahs" id="surah-ayahs-${s._key}">
+                ${ayahs.map((a,i)=>`<div class="ayah-row">
+                    <div class="ayah-row-num">${i+1}</div>
+                    <div style="flex:1;">
+                        <div class="ayah-row-ar">${a.ar}</div>
+                        <div class="ayah-row-fr">${a.fr||''}</div>
+                    </div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+window._toggleSurah = key=>{
+    const el = document.getElementById('surah-ayahs-'+key);
+    if(el) el.classList.toggle('open');
+};
+
+window.openModalAddSurah = ()=>{
+    ['ms-nom','ms-arabe','ms-francais'].forEach(id=>document.getElementById(id).value='');
+    openModal('modal-surah');
+};
+
+window.saveSurah = async()=>{
+    const nom = document.getElementById('ms-nom').value.trim();
+    const arText = document.getElementById('ms-arabe').value;
+    const frText = document.getElementById('ms-francais').value;
+    const arLines = arText.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    const frLines = frText.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    if(!nom || !arLines.length){ alert("Renseignez le nom de la sourate et au moins un verset en arabe."); return; }
+    const ayahs = arLines.map((ar,i)=>({ar, fr: frLines[i]||''}));
+    await push(ref(db,'coran'), { nom, ayahs, isDefault:false });
+    showNotif('🕌 Sourate "'+nom+'" ajoutée ('+ayahs.length+' versets).');
+    closeModal('modal-surah');
+};
+
+window._deleteSurah = async key=>{
+    const s = coranCache.find(x=>x._key===key);
+    if(s && s.isDefault){ alert("Cette sourate par défaut ne peut pas être supprimée."); return; }
+    if(!confirm("Supprimer définitivement cette sourate ?")) return;
+    await remove(ref(db,'coran/'+key));
+    showNotif('🗑️ Sourate supprimée.');
 };
 
 /* ══════════════════════════════════════

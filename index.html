@@ -728,6 +728,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .story-body {
@@ -1391,6 +1392,7 @@ label {
         <div class="story-header">
             <div class="story-header-avatar" id="story-header-avatar">-</div>
             <div class="story-header-title" id="story-header-title">-</div>
+            <button class="story-close-btn" id="story-mute-btn" onclick="toggleStoryMute()">🔊</button>
             <button class="story-close-btn" onclick="closeStory()">✕</button>
         </div>
         <div class="story-body" id="story-body">
@@ -2020,23 +2022,63 @@ function renderStoriesBar(){
 }
 
 let storyTimer = null;
+let storyMuted = (localStorage.getItem('coranStoryMuted')==='1');
+let storyPaused = false;
+let storyToken = 0;
+let arVoice = null, frVoice = null;
+
+function pickStoryVoices(){
+    if(!window.speechSynthesis) return;
+    const voices = speechSynthesis.getVoices();
+    arVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('ar')) || null;
+    frVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('fr')) || null;
+}
+if(window.speechSynthesis){
+    pickStoryVoices();
+    speechSynthesis.onvoiceschanged = pickStoryVoices;
+}
+function stopStorySpeech(){ if(window.speechSynthesis) speechSynthesis.cancel(); }
+
+function estimateMs(text, wpm){
+    const words = (text||'').trim().split(/\s+/).filter(Boolean).length || 1;
+    return Math.max(1200, (words/wpm)*60000);
+}
 
 function openStory(i){
     if(!coranCache.length) return;
     storySurahIndex = i;
     storyAyahIndex = 0;
     document.getElementById('coran-story-overlay').classList.remove('hidden');
+    updateMuteBtn();
     renderStorySlide();
 }
 
 function closeStory(){
+    storyToken++;
     clearTimeout(storyTimer);
+    stopStorySpeech();
     document.getElementById('coran-story-overlay').classList.add('hidden');
     renderStoriesBar();
 }
 
+function toggleStoryMute(){
+    storyMuted = !storyMuted;
+    localStorage.setItem('coranStoryMuted', storyMuted?'1':'0');
+    updateMuteBtn();
+    stopStorySpeech();
+    renderStorySlide(); // relance le verset courant dans le nouveau mode
+}
+function updateMuteBtn(){
+    const b = document.getElementById('story-mute-btn');
+    if(b) b.innerText = storyMuted ? '🔇' : '🔊';
+}
+
 function renderStorySlide(){
     clearTimeout(storyTimer);
+    stopStorySpeech();
+    storyToken++;
+    const myToken = storyToken;
+
     const surah = coranCache[storySurahIndex];
     if(!surah || !surah.ayahs || !surah.ayahs.length){ closeStory(); return; }
     if(storyAyahIndex >= surah.ayahs.length) storyAyahIndex = surah.ayahs.length-1;
@@ -2053,16 +2095,51 @@ function renderStorySlide(){
     document.getElementById('story-ayah-fr').innerText = ayah.fr||'';
     document.getElementById('story-ayah-badge').innerText = `${storyAyahIndex+1} / ${surah.ayahs.length}`;
 
+    const voiceAvailable = window.speechSynthesis && !storyMuted;
+    const totalEst = voiceAvailable
+        ? estimateMs(ayah.ar,100) + (ayah.fr? estimateMs(ayah.fr,150):0)
+        : STORY_DURATION;
+
     // barres de progression (une par verset)
     const row = document.getElementById('story-progress-row');
     row.innerHTML = surah.ayahs.map((_,idx)=>{
         let cls = '';
         if(idx < storyAyahIndex) cls = 'filled';
         else if(idx === storyAyahIndex) cls = 'active';
-        return `<div class="story-segment"><div class="story-segment-fill ${cls}" style="${idx===storyAyahIndex?`animation-duration:${STORY_DURATION}ms`:''}"></div></div>`;
+        return `<div class="story-segment"><div class="story-segment-fill ${cls}" style="${idx===storyAyahIndex?`animation-duration:${totalEst}ms`:''}"></div></div>`;
     }).join('');
 
-    storyTimer = setTimeout(storyNext, STORY_DURATION);
+    if(voiceAvailable){
+        speakStorySlide(ayah, myToken);
+    } else {
+        storyTimer = setTimeout(()=>{ if(myToken===storyToken) storyNext(); }, STORY_DURATION);
+    }
+}
+
+function speakStorySlide(ayah, myToken){
+    const uAr = new SpeechSynthesisUtterance(ayah.ar);
+    uAr.lang = 'ar-SA';
+    if(arVoice) uAr.voice = arVoice;
+    uAr.rate = 0.85;
+
+    const goNext = ()=>{ if(myToken===storyToken && !storyPaused) storyNext(); };
+
+    uAr.onend = ()=>{
+        if(myToken!==storyToken) return;
+        if(ayah.fr){
+            const uFr = new SpeechSynthesisUtterance(ayah.fr);
+            uFr.lang = 'fr-FR';
+            if(frVoice) uFr.voice = frVoice;
+            uFr.rate = 0.95;
+            uFr.onend = goNext;
+            uFr.onerror = goNext;
+            speechSynthesis.speak(uFr);
+        } else {
+            goNext();
+        }
+    };
+    uAr.onerror = ()=>{ if(myToken===storyToken) goNext(); };
+    speechSynthesis.speak(uAr);
 }
 
 function storyNext(){
@@ -2094,17 +2171,33 @@ function storyPrev(){
 (function(){
     const body = document.getElementById('coran-story-overlay');
     if(!body) return;
-    let held = false;
-    const pause = ()=>{ if(!held){ held=true; clearTimeout(storyTimer);
-        document.querySelectorAll('.story-segment-fill.active').forEach(el=>el.style.animationPlayState='paused'); } };
-    const resume = ()=>{ if(held){ held=false;
-        const el = document.querySelector('.story-segment-fill.active');
-        if(el){
-            el.style.animationPlayState='running';
-            const remaining = STORY_DURATION * (1 - (el.getBoundingClientRect().width / el.parentElement.getBoundingClientRect().width));
-            storyTimer = setTimeout(storyNext, Math.max(remaining,300));
+    const pause = ()=>{
+        if(storyPaused) return;
+        storyPaused = true;
+        clearTimeout(storyTimer);
+        if(window.speechSynthesis && speechSynthesis.speaking) speechSynthesis.pause();
+        document.querySelectorAll('.story-segment-fill.active').forEach(el=>el.style.animationPlayState='paused');
+    };
+    const resume = ()=>{
+        if(!storyPaused) return;
+        storyPaused = false;
+        if(window.speechSynthesis && speechSynthesis.paused){
+            speechSynthesis.resume();
+        } else if(!storyMuted && window.speechSynthesis){
+            // rien à reprendre côté voix (déjà terminé) : la suite se fera via onend
+        } else {
+            const el = document.querySelector('.story-segment-fill.active');
+            if(el){
+                el.style.animationPlayState='running';
+                const totalDur = parseFloat(el.style.animationDuration)*1000 || STORY_DURATION;
+                const ratio = el.getBoundingClientRect().width / (el.parentElement.getBoundingClientRect().width||1);
+                const remaining = totalDur * (1-ratio);
+                const myToken = storyToken;
+                storyTimer = setTimeout(()=>{ if(myToken===storyToken) storyNext(); }, Math.max(remaining,300));
+            }
         }
-    }};
+        document.querySelectorAll('.story-segment-fill.active').forEach(el=>el.style.animationPlayState='running');
+    };
     body.addEventListener('mousedown', pause);
     body.addEventListener('touchstart', pause, {passive:true});
     body.addEventListener('mouseup', resume);
@@ -2211,7 +2304,7 @@ Object.assign(window,{
     checkAdminLogin, adminLogout, saveWord, deleteWord, toggleDicoTab,
     renderDico, renderExpressionCard, initWordGame, renderSavedNotes,
     selectSurah, nextAyah, prevAyah, initCoranView,
-    renderStoriesBar, openStory, closeStory, storyNext, storyPrev
+    renderStoriesBar, openStory, closeStory, storyNext, storyPrev, toggleStoryMute
 });
 </script>
 </body>

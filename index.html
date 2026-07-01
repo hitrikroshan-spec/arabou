@@ -605,6 +605,178 @@ body {
     color: #64748b;
 }
 
+/* ===== CORAN STORIES ===== */
+.coran-stories-bar {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 6px 4px 14px;
+    scrollbar-width: none;
+}
+.coran-stories-bar::-webkit-scrollbar { display: none; }
+.coran-story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    cursor: pointer;
+    width: 66px;
+}
+.coran-story-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    padding: 3px;
+    background: var(--glam);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.coran-story-avatar.seen {
+    background: var(--border);
+}
+.coran-story-avatar-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--primary);
+    font-weight: 800;
+    overflow: hidden;
+}
+.coran-story-label {
+    font-size: 0.68rem;
+    color: var(--text);
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 66px;
+}
+
+/* ===== STORY OVERLAY (plein écran) ===== */
+#coran-story-overlay {
+    position: absolute;
+    inset: 0;
+    background: #0b1220;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+}
+#coran-story-overlay.hidden { display: none; }
+
+.story-progress-row {
+    display: flex;
+    gap: 5px;
+    padding: 10px 10px 0;
+}
+.story-segment {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.3);
+    overflow: hidden;
+}
+.story-segment-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 3px;
+}
+.story-segment-fill.filled { width: 100%; transition: none; }
+.story-segment-fill.active { width: 0%; animation: storyfill linear forwards; }
+@keyframes storyfill { from { width: 0%; } to { width: 100%; } }
+
+.story-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px 6px;
+}
+.story-header-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--glam);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+}
+.story-header-title {
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex: 1;
+}
+.story-close-btn {
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 26px;
+    text-align: center;
+    position: relative;
+}
+.story-ayah-arabic {
+    font-size: 2rem;
+    line-height: 3rem;
+    font-family: 'Amiri Quran', 'Traditional Arabic', serif;
+    direction: rtl;
+}
+.story-ayah-fr {
+    margin-top: 22px;
+    font-size: 1rem;
+    color: #cbd5e1;
+    direction: ltr;
+    line-height: 1.6rem;
+}
+.story-ayah-badge {
+    margin-top: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.story-tap-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 35%;
+    z-index: 2;
+}
+.story-tap-zone.left { left: 0; }
+.story-tap-zone.right { right: 0; }
+
 .nav-controls {
     display: flex;
     justify-content: space-between;
@@ -1168,6 +1340,7 @@ label {
 
         <!-- CORAN VIEW -->
         <div id="view-coran" class="hidden">
+            <div class="coran-stories-bar" id="coran-stories-bar"></div>
             <div class="filter-bar" id="coran-surah-selector"></div>
             <div class="expression-card">
                 <div style="font-size:0.85rem;color:var(--muted);font-weight:700;margin-bottom:10px;" id="coran-surah-title">-</div>
@@ -1211,6 +1384,23 @@ label {
             <span class="tab-icon">🕌</span>القرآن
         </button>
     </nav>
+
+    <!-- CORAN STORY OVERLAY (plein écran, défilement type "story") -->
+    <div id="coran-story-overlay" class="hidden">
+        <div class="story-progress-row" id="story-progress-row"></div>
+        <div class="story-header">
+            <div class="story-header-avatar" id="story-header-avatar">-</div>
+            <div class="story-header-title" id="story-header-title">-</div>
+            <button class="story-close-btn" onclick="closeStory()">✕</button>
+        </div>
+        <div class="story-body" id="story-body">
+            <div class="story-tap-zone left" onclick="storyPrev()"></div>
+            <div class="story-tap-zone right" onclick="storyNext()"></div>
+            <div class="story-ayah-arabic" id="story-ayah-arabic">-</div>
+            <div class="story-ayah-fr" id="story-ayah-fr">-</div>
+            <div class="story-ayah-badge" id="story-ayah-badge">1</div>
+        </div>
+    </div>
 
 </div><!-- /phone -->
 
@@ -1804,7 +1994,123 @@ function initCoranView(){
     if(currentSurahIndex >= coranCache.length) currentSurahIndex = 0;
     renderSurahSelector();
     renderAyah();
+    renderStoriesBar();
 }
+
+/* ============================================================
+   CORAN — STORIES (défilement façon story, toutes les sourates
+   y compris celles ajoutées par l'admin via Firebase)
+============================================================ */
+let seenSurahs = new Set(JSON.parse(sessionStorage.getItem('coranStoriesSeen')||'[]'));
+let storySurahIndex = 0, storyAyahIndex = 0;
+const STORY_DURATION = 5000; // ms par verset
+
+function renderStoriesBar(){
+    const bar = document.getElementById('coran-stories-bar'); if(!bar) return;
+    bar.innerHTML = coranCache.map((s,i)=>{
+        const seen = seenSurahs.has(s._key||String(i));
+        const initial = (s.nom||'?').trim().charAt(0);
+        return `<div class="coran-story-item" onclick="openStory(${i})">
+            <div class="coran-story-avatar ${seen?'seen':''}">
+                <div class="coran-story-avatar-inner">${initial}</div>
+            </div>
+            <div class="coran-story-label">${(s.nom||'').split('—')[0].trim()}</div>
+        </div>`;
+    }).join('');
+}
+
+let storyTimer = null;
+
+function openStory(i){
+    if(!coranCache.length) return;
+    storySurahIndex = i;
+    storyAyahIndex = 0;
+    document.getElementById('coran-story-overlay').classList.remove('hidden');
+    renderStorySlide();
+}
+
+function closeStory(){
+    clearTimeout(storyTimer);
+    document.getElementById('coran-story-overlay').classList.add('hidden');
+    renderStoriesBar();
+}
+
+function renderStorySlide(){
+    clearTimeout(storyTimer);
+    const surah = coranCache[storySurahIndex];
+    if(!surah || !surah.ayahs || !surah.ayahs.length){ closeStory(); return; }
+    if(storyAyahIndex >= surah.ayahs.length) storyAyahIndex = surah.ayahs.length-1;
+    if(storyAyahIndex < 0) storyAyahIndex = 0;
+
+    const key = surah._key||String(storySurahIndex);
+    seenSurahs.add(key);
+    sessionStorage.setItem('coranStoriesSeen', JSON.stringify([...seenSurahs]));
+
+    const ayah = surah.ayahs[storyAyahIndex];
+    document.getElementById('story-header-avatar').innerText = (surah.nom||'?').trim().charAt(0);
+    document.getElementById('story-header-title').innerText = surah.nom;
+    document.getElementById('story-ayah-arabic').innerText = ayah.ar;
+    document.getElementById('story-ayah-fr').innerText = ayah.fr||'';
+    document.getElementById('story-ayah-badge').innerText = `${storyAyahIndex+1} / ${surah.ayahs.length}`;
+
+    // barres de progression (une par verset)
+    const row = document.getElementById('story-progress-row');
+    row.innerHTML = surah.ayahs.map((_,idx)=>{
+        let cls = '';
+        if(idx < storyAyahIndex) cls = 'filled';
+        else if(idx === storyAyahIndex) cls = 'active';
+        return `<div class="story-segment"><div class="story-segment-fill ${cls}" style="${idx===storyAyahIndex?`animation-duration:${STORY_DURATION}ms`:''}"></div></div>`;
+    }).join('');
+
+    storyTimer = setTimeout(storyNext, STORY_DURATION);
+}
+
+function storyNext(){
+    const surah = coranCache[storySurahIndex]; if(!surah) return;
+    if(storyAyahIndex < surah.ayahs.length-1){
+        storyAyahIndex++;
+        renderStorySlide();
+    } else if(storySurahIndex < coranCache.length-1){
+        storySurahIndex++; storyAyahIndex = 0;
+        renderStorySlide();
+    } else {
+        closeStory();
+    }
+}
+
+function storyPrev(){
+    if(storyAyahIndex > 0){
+        storyAyahIndex--;
+        renderStorySlide();
+    } else if(storySurahIndex > 0){
+        storySurahIndex--;
+        const prevSurah = coranCache[storySurahIndex];
+        storyAyahIndex = prevSurah.ayahs.length-1;
+        renderStorySlide();
+    }
+}
+
+// pause au maintien du doigt/clic, reprise au relâchement
+(function(){
+    const body = document.getElementById('coran-story-overlay');
+    if(!body) return;
+    let held = false;
+    const pause = ()=>{ if(!held){ held=true; clearTimeout(storyTimer);
+        document.querySelectorAll('.story-segment-fill.active').forEach(el=>el.style.animationPlayState='paused'); } };
+    const resume = ()=>{ if(held){ held=false;
+        const el = document.querySelector('.story-segment-fill.active');
+        if(el){
+            el.style.animationPlayState='running';
+            const remaining = STORY_DURATION * (1 - (el.getBoundingClientRect().width / el.parentElement.getBoundingClientRect().width));
+            storyTimer = setTimeout(storyNext, Math.max(remaining,300));
+        }
+    }};
+    body.addEventListener('mousedown', pause);
+    body.addEventListener('touchstart', pause, {passive:true});
+    body.addEventListener('mouseup', resume);
+    body.addEventListener('mouseleave', resume);
+    body.addEventListener('touchend', resume);
+})();
 
 /* ============================================================
    ÉDITEUR & NOTES — par utilisateur connecté
@@ -1904,7 +2210,8 @@ Object.assign(window,{
     formatDoc, changeTextColor, saveEditorText, restoreNote, deleteNote,
     checkAdminLogin, adminLogout, saveWord, deleteWord, toggleDicoTab,
     renderDico, renderExpressionCard, initWordGame, renderSavedNotes,
-    selectSurah, nextAyah, prevAyah, initCoranView
+    selectSurah, nextAyah, prevAyah, initCoranView,
+    renderStoriesBar, openStory, closeStory, storyNext, storyPrev
 });
 </script>
 </body>

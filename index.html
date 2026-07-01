@@ -285,6 +285,35 @@ body {
 .btn-logout:active { background: rgba(255,255,255,0.35); }
 .btn-logout title { display: none; }
 
+/* HEADER DROPDOWN MENU (3 lignes -> déconnexion) */
+.header-menu-wrap { position: relative; }
+.header-dropdown {
+    position: absolute;
+    top: 46px;
+    inset-inline-end: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(30,64,175,0.28);
+    padding: 6px;
+    min-width: 190px;
+    z-index: 60;
+}
+.header-dropdown.hidden { display: none; }
+.header-dropdown .btn-logout-item {
+    width: 100%;
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+    border-radius: 9px;
+    padding: 11px 14px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: 'Amiri', serif;
+    direction: rtl;
+}
+.header-dropdown .btn-logout-item:active { background: #fecaca; }
+
 /* USER CARD IN HEADER */
 .user-pill {
     background: rgba(255,255,255,0.18);
@@ -775,9 +804,11 @@ label {
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
     z-index: 99;
     box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* TASKBAR IS HIDDEN BY DEFAULT, shown only when logged in */
@@ -785,7 +816,8 @@ label {
 .taskbar.visible { display: flex; }
 
 .task-item {
-    flex: 1;
+    flex: 0 0 auto;
+    min-width: 64px;
     height: 100%;
     background: none;
     border: none;
@@ -953,8 +985,11 @@ label {
             <!-- left side: back or empty -->
         </div>
         <div class="header-title" id="main-title">الأبجدية</div>
-        <div class="header-side">
-            <button class="btn-logout" id="btn-logout-header" onclick="userLogout()" title="Déconnexion" style="display:none;">⏻</button>
+        <div class="header-side header-menu-wrap">
+            <button class="btn-logout" id="btn-menu-toggle" onclick="toggleHeaderMenu()" title="Menu" style="display:none;">☰</button>
+            <div class="header-dropdown hidden" id="header-dropdown">
+                <button class="btn-logout-item" onclick="userLogout()">⏻ تسجيل الخروج — Déconnexion</button>
+            </div>
         </div>
     </div>
 
@@ -1111,6 +1146,22 @@ label {
             <div class="dico-container"></div>
         </div>
 
+        <!-- CORAN VIEW -->
+        <div id="view-coran" class="hidden">
+            <div class="filter-bar" id="coran-surah-selector"></div>
+            <div class="expression-card">
+                <div style="font-size:0.85rem;color:var(--muted);font-weight:700;margin-bottom:10px;" id="coran-surah-title">-</div>
+                <div class="expression-ar" id="coran-ayah-arabic" style="font-size:1.9rem;line-height:2.6rem;">-</div>
+                <hr style="border:0;border-top:1px solid var(--border);margin:16px 0;">
+                <div class="expression-fr" id="coran-ayah-fr">-</div>
+            </div>
+            <div class="nav-controls">
+                <button class="btn-nav" onclick="prevAyah()">السابق</button>
+                <button class="btn-nav" onclick="nextAyah()">التالي</button>
+            </div>
+            <div style="text-align:center;margin-top:12px;color:var(--muted);font-weight:700;" id="coran-ayah-counter">0 / 0</div>
+        </div>
+
     </div><!-- /content -->
 
     <!-- ===== BOTTOM TASKBAR ===== -->
@@ -1135,6 +1186,9 @@ label {
         </button>
         <button class="task-item" id="tab-dico" onclick="switchView('dico')">
             <span class="tab-icon">📖</span>قاموس
+        </button>
+        <button class="task-item" id="tab-coran" onclick="switchView('coran')">
+            <span class="tab-icon">🕌</span>القرآن
         </button>
     </nav>
 
@@ -1355,7 +1409,7 @@ async function attemptAutoLogin(){
         document.getElementById('screen-auth').classList.add('hidden');
         document.getElementById('main-taskbar').classList.add('visible');
         document.getElementById('main-content').classList.add('with-taskbar');
-        document.getElementById('btn-logout-header').style.display='flex';
+        document.getElementById('btn-menu-toggle').style.display='flex';
         document.getElementById('u-name').innerText  = activeUser.name;
         document.getElementById('u-email').innerText = activeUser.email;
         document.getElementById('u-avatar').innerText= activeUser.avatarLetter;
@@ -1375,7 +1429,8 @@ function _forceLogout(){
     localStorage.removeItem('savedUserKey');
     document.getElementById('main-taskbar').classList.remove('visible');
     document.getElementById('main-content').classList.remove('with-taskbar');
-    document.getElementById('btn-logout-header').style.display='none';
+    document.getElementById('btn-menu-toggle').style.display='none';
+    document.getElementById('header-dropdown').classList.add('hidden');
     document.getElementById('screen-auth').classList.remove('hidden');
     document.getElementById('screen-welcome').classList.add('hidden');
 }
@@ -1395,7 +1450,7 @@ function dismissWelcome(){
     document.getElementById('screen-welcome').classList.add('hidden');
     document.getElementById('main-taskbar').classList.add('visible');
     document.getElementById('main-content').classList.add('with-taskbar');
-    document.getElementById('btn-logout-header').style.display='flex';
+    document.getElementById('btn-menu-toggle').style.display='flex';
     document.getElementById('u-name').innerText  = activeUser.name;
     document.getElementById('u-email').innerText = activeUser.email;
     document.getElementById('u-avatar').innerText= activeUser.avatarLetter;
@@ -1409,6 +1464,15 @@ function dismissWelcome(){
     switchView('alphabet');
 }
 
+function toggleHeaderMenu(){
+    document.getElementById('header-dropdown').classList.toggle('hidden');
+}
+document.addEventListener('click', (e)=>{
+    const wrap = document.querySelector('.header-menu-wrap');
+    const dd = document.getElementById('header-dropdown');
+    if(wrap && dd && !wrap.contains(e.target)) dd.classList.add('hidden');
+});
+
 function userLogout(){
     if(!confirm("Voulez-vous vous déconnecter ?")) return;
     _forceLogout();
@@ -1420,18 +1484,19 @@ function userLogout(){
    VUES
 ============================================================ */
 function switchView(v){
-    ['alphabet','positions','expressions','games','grammar','editor','add','dico'].forEach(n=>{
+    ['alphabet','positions','expressions','games','grammar','editor','add','dico','coran'].forEach(n=>{
         document.getElementById('view-'+n).classList.toggle('hidden',n!==v);
     });
     document.querySelectorAll('.taskbar .task-item').forEach(i=>i.classList.remove('active'));
     const tab=document.getElementById('tab-'+v); if(tab) tab.classList.add('active');
     const titles={alphabet:"الأبجدية",positions:"مواضع الحروف",expressions:"العبارات",
-        games:"لعبة الكلمات",grammar:"الحركات",editor:"الكتابة",add:"إضافة كلمات",dico:"القاموس"};
+        games:"لعبة الكلمات",grammar:"الحركات",editor:"الكتابة",add:"إضافة كلمات",dico:"القاموس",coran:"القرآن"};
     document.getElementById('main-title').innerText = titles[v]||"العربية";
     if(v==='dico') toggleDicoTab(currentDicoView);
     if(v==='positions') renderPositionsTable();
     if(v==='expressions') renderExpressionCard();
     if(v==='games') initWordGame();
+    if(v==='coran') initCoranView();
     if(v==='add'){
         if(sessionStorage.getItem('isAdminConnected')==='true') showAdminDashboard();
         else adminLogout();
@@ -1614,6 +1679,91 @@ function verifyGameAnswer(s,btn){
 }
 
 /* ============================================================
+   CORAN — 5 sourates courtes (pour débuter)
+============================================================ */
+const CORAN_DATA = [
+    { key:"fatiha", nom:"الفاتحة — Al-Fâtiha", ayahs:[
+        {ar:"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", fr:"Au nom de Dieu, le Tout Miséricordieux, le Très Miséricordieux."},
+        {ar:"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", fr:"Louange à Dieu, Seigneur des mondes."},
+        {ar:"الرَّحْمَٰنِ الرَّحِيمِ", fr:"Le Tout Miséricordieux, le Très Miséricordieux."},
+        {ar:"مَالِكِ يَوْمِ الدِّينِ", fr:"Maître du Jour du Jugement."},
+        {ar:"إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", fr:"C'est Toi que nous adorons, et c'est Toi dont nous implorons secours."},
+        {ar:"اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", fr:"Guide-nous sur le droit chemin."},
+        {ar:"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", fr:"Le chemin de ceux que Tu as comblés de bienfaits, non pas de ceux qui ont encouru Ta colère, ni des égarés."}
+    ]},
+    { key:"ikhlas", nom:"الإخلاص — Al-Ikhlâs", ayahs:[
+        {ar:"قُلْ هُوَ اللَّهُ أَحَدٌ", fr:"Dis : Il est Dieu, l'Unique."},
+        {ar:"اللَّهُ الصَّمَدُ", fr:"Dieu, Celui à qui l'on s'en remet entièrement."},
+        {ar:"لَمْ يَلِدْ وَلَمْ يُولَدْ", fr:"Il n'a jamais engendré et n'a pas été engendré."},
+        {ar:"وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ", fr:"Et nul n'est égal à Lui."}
+    ]},
+    { key:"falaq", nom:"الفلق — Al-Falaq", ayahs:[
+        {ar:"قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ", fr:"Dis : Je cherche refuge auprès du Seigneur de l'aube naissante."},
+        {ar:"مِنْ شَرِّ مَا خَلَقَ", fr:"Contre le mal des êtres qu'Il a créés."},
+        {ar:"وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ", fr:"Contre le mal de l'obscurité quand elle s'installe."},
+        {ar:"وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ", fr:"Contre le mal de celles qui soufflent sur les nœuds."},
+        {ar:"وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ", fr:"Contre le mal de l'envieux quand il envie."}
+    ]},
+    { key:"nas", nom:"الناس — An-Nâs", ayahs:[
+        {ar:"قُلْ أَعُوذُ بِرَبِّ النَّاسِ", fr:"Dis : Je cherche refuge auprès du Seigneur des hommes."},
+        {ar:"مَلِكِ النَّاسِ", fr:"Le Souverain des hommes."},
+        {ar:"إِلَٰهِ النَّاسِ", fr:"Le Dieu des hommes."},
+        {ar:"مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ", fr:"Contre le mal du mauvais conseiller, le sournois."},
+        {ar:"الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ", fr:"Qui souffle le mal dans les cœurs des hommes."},
+        {ar:"مِنَ الْجِنَّةِ وَالنَّاسِ", fr:"Qu'il soit un djinn ou un homme."}
+    ]},
+    { key:"kawthar", nom:"الكوثر — Al-Kawthar", ayahs:[
+        {ar:"إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ", fr:"Nous t'avons accordé l'Abondance."},
+        {ar:"فَصَلِّ لِرَبِّكَ وَانْحَرْ", fr:"Prie donc ton Seigneur et sacrifie."},
+        {ar:"إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ", fr:"Celui qui te hait sera lui-même sans postérité."}
+    ]}
+];
+
+let currentSurahIndex = 0, currentAyahIndex = 0;
+
+function renderSurahSelector(){
+    const c = document.getElementById('coran-surah-selector'); if(!c) return;
+    c.innerHTML = CORAN_DATA.map((s,i)=>
+        `<button class="btn-filter ${i===currentSurahIndex?'active':''}" onclick="selectSurah(${i})">${s.nom}</button>`
+    ).join('');
+}
+
+function selectSurah(i){
+    currentSurahIndex = i;
+    currentAyahIndex = 0;
+    renderSurahSelector();
+    renderAyah();
+}
+
+function renderAyah(){
+    const surah = CORAN_DATA[currentSurahIndex]; if(!surah) return;
+    const ayah = surah.ayahs[currentAyahIndex];
+    document.getElementById('coran-surah-title').innerText = surah.nom;
+    document.getElementById('coran-ayah-arabic').innerText = ayah.ar;
+    document.getElementById('coran-ayah-fr').innerText = ayah.fr;
+    document.getElementById('coran-ayah-counter').innerText = `${currentAyahIndex+1} / ${surah.ayahs.length}`;
+}
+
+function nextAyah(){
+    const surah = CORAN_DATA[currentSurahIndex];
+    currentAyahIndex++;
+    if(currentAyahIndex >= surah.ayahs.length) currentAyahIndex = 0;
+    renderAyah();
+}
+
+function prevAyah(){
+    const surah = CORAN_DATA[currentSurahIndex];
+    currentAyahIndex--;
+    if(currentAyahIndex < 0) currentAyahIndex = surah.ayahs.length - 1;
+    renderAyah();
+}
+
+function initCoranView(){
+    renderSurahSelector();
+    renderAyah();
+}
+
+/* ============================================================
    ÉDITEUR & NOTES — par utilisateur connecté
 ============================================================ */
 function formatDoc(cmd){ document.execCommand(cmd,false,null); document.getElementById('arabic-rainbow-editor').focus(); }
@@ -1704,13 +1854,14 @@ window.onload = ()=>{ renderAlphabet('all'); renderGrammarAlphabet('َ'); attemp
 
 // Exposition globale (nécessaire car type="module")
 Object.assign(window,{
-    switchAuthTab, processRegister, processLogin, dismissWelcome, userLogout,
+    switchAuthTab, processRegister, processLogin, dismissWelcome, userLogout, toggleHeaderMenu,
     switchView, filterAlphabet, toggleQuizMode, verifyQuizAnswer, updateScoreDisplay,
     generateNextQuizQuestion, renderPositionsTable, selectAccent,
     nextExpression, prevExpression, verifyGameAnswer,
     formatDoc, changeTextColor, saveEditorText, restoreNote, deleteNote,
     checkAdminLogin, adminLogout, saveWord, deleteWord, toggleDicoTab,
-    renderDico, renderExpressionCard, initWordGame, renderSavedNotes
+    renderDico, renderExpressionCard, initWordGame, renderSavedNotes,
+    selectSurah, nextAyah, prevAyah, initCoranView
 });
 </script>
 </body>

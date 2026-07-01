@@ -585,6 +585,26 @@ body {
     direction: ltr;
 }
 
+/* CORAN — numéro de verset + petite traduction française */
+.ayah-num-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--glam);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-family: 'Inter', sans-serif;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+#coran-ayah-fr {
+    font-size: 0.82rem !important;
+    color: #64748b;
+}
+
 .nav-controls {
     display: flex;
     justify-content: space-between;
@@ -1679,10 +1699,12 @@ function verifyGameAnswer(s,btn){
 }
 
 /* ============================================================
-   CORAN — 5 sourates courtes (pour débuter)
+   CORAN — lecture Firebase temps réel (5 sourates par défaut,
+   + celles ajoutées par l'admin). Client = lecture seule,
+   verset par verset.
 ============================================================ */
-const CORAN_DATA = [
-    { key:"fatiha", nom:"الفاتحة — Al-Fâtiha", ayahs:[
+const DEFAULT_CORAN = [
+    { nom:"الفاتحة — Al-Fâtiha", isDefault:true, ayahs:[
         {ar:"بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", fr:"Au nom de Dieu, le Tout Miséricordieux, le Très Miséricordieux."},
         {ar:"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", fr:"Louange à Dieu, Seigneur des mondes."},
         {ar:"الرَّحْمَٰنِ الرَّحِيمِ", fr:"Le Tout Miséricordieux, le Très Miséricordieux."},
@@ -1691,20 +1713,20 @@ const CORAN_DATA = [
         {ar:"اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", fr:"Guide-nous sur le droit chemin."},
         {ar:"صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", fr:"Le chemin de ceux que Tu as comblés de bienfaits, non pas de ceux qui ont encouru Ta colère, ni des égarés."}
     ]},
-    { key:"ikhlas", nom:"الإخلاص — Al-Ikhlâs", ayahs:[
+    { nom:"الإخلاص — Al-Ikhlâs", isDefault:true, ayahs:[
         {ar:"قُلْ هُوَ اللَّهُ أَحَدٌ", fr:"Dis : Il est Dieu, l'Unique."},
         {ar:"اللَّهُ الصَّمَدُ", fr:"Dieu, Celui à qui l'on s'en remet entièrement."},
         {ar:"لَمْ يَلِدْ وَلَمْ يُولَدْ", fr:"Il n'a jamais engendré et n'a pas été engendré."},
         {ar:"وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ", fr:"Et nul n'est égal à Lui."}
     ]},
-    { key:"falaq", nom:"الفلق — Al-Falaq", ayahs:[
+    { nom:"الفلق — Al-Falaq", isDefault:true, ayahs:[
         {ar:"قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ", fr:"Dis : Je cherche refuge auprès du Seigneur de l'aube naissante."},
         {ar:"مِنْ شَرِّ مَا خَلَقَ", fr:"Contre le mal des êtres qu'Il a créés."},
         {ar:"وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ", fr:"Contre le mal de l'obscurité quand elle s'installe."},
         {ar:"وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ", fr:"Contre le mal de celles qui soufflent sur les nœuds."},
         {ar:"وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ", fr:"Contre le mal de l'envieux quand il envie."}
     ]},
-    { key:"nas", nom:"الناس — An-Nâs", ayahs:[
+    { nom:"الناس — An-Nâs", isDefault:true, ayahs:[
         {ar:"قُلْ أَعُوذُ بِرَبِّ النَّاسِ", fr:"Dis : Je cherche refuge auprès du Seigneur des hommes."},
         {ar:"مَلِكِ النَّاسِ", fr:"Le Souverain des hommes."},
         {ar:"إِلَٰهِ النَّاسِ", fr:"Le Dieu des hommes."},
@@ -1712,18 +1734,31 @@ const CORAN_DATA = [
         {ar:"الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ", fr:"Qui souffle le mal dans les cœurs des hommes."},
         {ar:"مِنَ الْجِنَّةِ وَالنَّاسِ", fr:"Qu'il soit un djinn ou un homme."}
     ]},
-    { key:"kawthar", nom:"الكوثر — Al-Kawthar", ayahs:[
+    { nom:"الكوثر — Al-Kawthar", isDefault:true, ayahs:[
         {ar:"إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ", fr:"Nous t'avons accordé l'Abondance."},
         {ar:"فَصَلِّ لِرَبِّكَ وَانْحَرْ", fr:"Prie donc ton Seigneur et sacrifie."},
         {ar:"إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ", fr:"Celui qui te hait sera lui-même sans postérité."}
     ]}
 ];
 
+let coranCache = [];
 let currentSurahIndex = 0, currentAyahIndex = 0;
+
+onValue(ref(db,'coran'), snap=>{
+    const data = snap.val();
+    if(data){
+        coranCache = Object.entries(data).map(([k,v])=>({_key:k,...v}));
+    } else {
+        coranCache = [];
+        DEFAULT_CORAN.forEach(s => push(ref(db,'coran'), s));
+    }
+    const vCoran = document.getElementById('view-coran');
+    if(vCoran && !vCoran.classList.contains('hidden')) initCoranView();
+});
 
 function renderSurahSelector(){
     const c = document.getElementById('coran-surah-selector'); if(!c) return;
-    c.innerHTML = CORAN_DATA.map((s,i)=>
+    c.innerHTML = coranCache.map((s,i)=>
         `<button class="btn-filter ${i===currentSurahIndex?'active':''}" onclick="selectSurah(${i})">${s.nom}</button>`
     ).join('');
 }
@@ -1736,29 +1771,37 @@ function selectSurah(i){
 }
 
 function renderAyah(){
-    const surah = CORAN_DATA[currentSurahIndex]; if(!surah) return;
+    const surah = coranCache[currentSurahIndex];
+    if(!surah || !surah.ayahs || !surah.ayahs.length){
+        document.getElementById('coran-surah-title').innerText = surah?surah.nom:"لا توجد سورة";
+        document.getElementById('coran-ayah-arabic').innerText = "-";
+        document.getElementById('coran-ayah-fr').innerText = "";
+        document.getElementById('coran-ayah-counter').innerText = "0 / 0";
+        return;
+    }
     const ayah = surah.ayahs[currentAyahIndex];
     document.getElementById('coran-surah-title').innerText = surah.nom;
-    document.getElementById('coran-ayah-arabic').innerText = ayah.ar;
-    document.getElementById('coran-ayah-fr').innerText = ayah.fr;
+    document.getElementById('coran-ayah-arabic').innerHTML = `${ayah.ar} <span class="ayah-num-badge">${currentAyahIndex+1}</span>`;
+    document.getElementById('coran-ayah-fr').innerText = ayah.fr||"";
     document.getElementById('coran-ayah-counter').innerText = `${currentAyahIndex+1} / ${surah.ayahs.length}`;
 }
 
 function nextAyah(){
-    const surah = CORAN_DATA[currentSurahIndex];
+    const surah = coranCache[currentSurahIndex]; if(!surah || !surah.ayahs.length) return;
     currentAyahIndex++;
     if(currentAyahIndex >= surah.ayahs.length) currentAyahIndex = 0;
     renderAyah();
 }
 
 function prevAyah(){
-    const surah = CORAN_DATA[currentSurahIndex];
+    const surah = coranCache[currentSurahIndex]; if(!surah || !surah.ayahs.length) return;
     currentAyahIndex--;
     if(currentAyahIndex < 0) currentAyahIndex = surah.ayahs.length - 1;
     renderAyah();
 }
 
 function initCoranView(){
+    if(currentSurahIndex >= coranCache.length) currentSurahIndex = 0;
     renderSurahSelector();
     renderAyah();
 }
